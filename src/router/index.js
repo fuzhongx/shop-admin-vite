@@ -1,28 +1,35 @@
-import { createRouter,createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import NotFound from '@/pages/404.vue'
 import Index from '@/pages/index.vue'
+import Login from '@/pages/login.vue'
 import About from '@/pages/about.vue'
 
-const routes=[
+const routes = [
     {
-        path:"/",
-        component:Index
-        
-    },  {
-        path:"/about",
-        component:About
-        
+        path: "/",
+        component: Login
+
+    }, {
+        path: "/index",
+        component: Index,
+        children: []
+
     },
     {
-        path:'/:pathMatch(.*)*',
-        component:NotFound
-        
+        path: "/about",
+        component: About
+
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        component: NotFound
+
     },
 
 ]
 
-const router=createRouter({
-    history:createWebHistory(),
+const router = createRouter({
+    history: createWebHistory(),
     routes
 })
 
