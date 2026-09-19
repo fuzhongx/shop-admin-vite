@@ -17,7 +17,7 @@
           <span class="line"></span>
         </div>
 
-        <el-form ref="suFormReF" :model="From" :rules="rules" class="w-[350px]">
+        <el-form ref="suFormReF" :model="From" :rules="rules" class="w-[350px]" >
           <el-form-item prop="username">
             <el-input v-model="From.username" class="h-10" placeholder="请输入账号">
               <template #prefix>
@@ -38,7 +38,8 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button @click="submitForm(suFormReF)" class="subBtn" :loading='loading'>登 录</el-button>
+            <el-button  @click="submitForm()" class="subBtn" :loading='loading'>登
+              录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -46,16 +47,14 @@
   </el-row>
 </template>
 <script  setup>
-import { reactive, ref } from "vue";
-import { login, getinfo } from "@/api/menager.js";
+import { reactive, ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { setToken } from '@/composables/auto'
 import { toast } from '@/composables/util'
 
 const From = reactive({
-  username: "admin",
-  password: "admin",
+  username: "",
+  password: "",
 });
 
 const rules = {
@@ -72,33 +71,39 @@ const loading = ref(false)
 const router = new useRouter();
 const store = useStore()
 
-const submitForm = async (formEl) => {
-  if (!formEl) return;
+const submitForm = async () => {
+  await suFormReF.value.validate((valid, fields) => {
 
-  await formEl.validate((valid, fields) => {
     if (!valid) return;
+
     loading.value = true
-    login(From).then((res) => {
-      //提示成功
+
+    store.dispatch('login', From).then(() => {
       toast("登录成功", 'success', 1000);
+      router.push("/");
+    }).finally(() => {
+      loading.value = false//请求结束之后
+    })
 
-      //存储token
-      setToken(res.token)
-
-      // 获取管理员信息和权限菜单
-      getinfo().then((res) => {
-        console.log(res, "用户信息");
-        store.commit('SET_USERINFO',res)
-      });
-
-      //跳转到后台主页
-      router.push("/index");
-
-    }).finally(() => {//请求结束之后
-      loading.value = false
-    });
-  });
+  })
 };
+
+//键盘回车登录
+const onKeyup = (e) => {
+  if (e.key =='Enter') submitForm()
+}
+
+onMounted(() => {
+  //监听键盘事件
+  document.addEventListener('keyup', onKeyup)
+})
+
+//页面卸载之后移除监听
+onBeforeUnmount(() => {
+  document.removeEventListener('keyup',onKeyup)
+})
+
+
 </script>
 
 <style scoped>

@@ -30,7 +30,7 @@ service.interceptors.response.use(function (response) {
 }, function (error) {
 
     // 对响应错误做点什么
-    toast(error.response.data.msg || '请求失败', 'error', 2000)
+    toast(error.response.data.msg || '网络异常，请求失败', 'error', 2000)
 
     return Promise.reject(error);
 });

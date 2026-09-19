@@ -15,27 +15,25 @@ export function login(data){
 
 /**
  * 
- * @param {} data 
+ * @param 
  * @returns 获取管理员信息和权限菜单
  */
-export function getinfo(data){
+export function getinfo(){
     return axios({
         url:'/admin/getinfo',
         method:'post',
-        data
     })
 }
 
 /**
  * 
- * @param {} data 
+ * @param {}  
  * @returns 退出登录
  */
-export function logout(data){
+export function logout(){
     return axios({
         url:'/admin/logout',
         method:'post',
-        data
     })
 }
 

@@ -2,28 +2,27 @@ import { createRouter, createWebHistory } from "vue-router";
 import NotFound from '@/pages/404.vue'
 import Index from '@/pages/index.vue'
 import Login from '@/pages/login.vue'
-import About from '@/pages/about.vue'
+
 
 const routes = [
     {
-        path: "/",
-        component: Login
+        path: "/login",
+        component: Login,
+        meta:{
+            title:'登录页'
+        }
 
     }, {
-        path: "/index",
+        path: "/",
         component: Index,
+        meta:{
+            title:'后台首页'
+        },
         children: []
-
-    },
-    {
-        path: "/about",
-        component: About
-
     },
     {
         path: '/:pathMatch(.*)*',
         component: NotFound
-
     },
 
 ]
