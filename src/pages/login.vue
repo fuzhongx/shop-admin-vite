@@ -17,7 +17,7 @@
           <span class="line"></span>
         </div>
 
-        <el-form ref="suFormReF" :model="From" :rules="rules" class="w-[350px]" >
+        <el-form ref="suFormReF" :model="From" :rules="rules" class="w-[350px]">
           <el-form-item prop="username">
             <el-input v-model="From.username" class="h-10" placeholder="请输入账号">
               <template #prefix>
@@ -38,7 +38,7 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button  @click="submitForm()" class="subBtn" :loading='loading'>登
+            <el-button @click="submitForm()" class="subBtn" :loading='loading'>登
               录</el-button>
           </el-form-item>
         </el-form>
@@ -53,8 +53,8 @@ import { useStore } from "vuex";
 import { toast } from '@/composables/util'
 
 const From = reactive({
-  username: "",
-  password: "",
+  username: "admin",
+  password: "admin",
 });
 
 const rules = {
@@ -90,7 +90,7 @@ const submitForm = async () => {
 
 //键盘回车登录
 const onKeyup = (e) => {
-  if (e.key =='Enter') submitForm()
+  if (e.key == 'Enter') submitForm()
 }
 
 onMounted(() => {
@@ -100,7 +100,7 @@ onMounted(() => {
 
 //页面卸载之后移除监听
 onBeforeUnmount(() => {
-  document.removeEventListener('keyup',onKeyup)
+  document.removeEventListener('keyup', onKeyup)
 })
 
 
