@@ -13,7 +13,7 @@
         <el-icon class="icon-btn">
             <Refresh @click="handleRefresh" />
         </el-icon>
-
+ 
         <div class="right">
             <el-icon class="FullScreen">
                 <FullScreen @click="toggle" v-if="!isFullscreen" />
@@ -40,23 +40,22 @@
     </div>
 
     <!-- 修改密码 -->
-    <el-drawer v-model="showDrawer" title="修改密码" close-on-click-modal="false">
-        <el-form ref="FormRef" style="max-width: 600px" :model="ruleForm"  :rules="rules" label-width="auto"
-            class="demo-ruleForm">
+    <el-drawer v-model="showDrawer" title="修改密码">
+        <el-form ref="FormRefs" style="max-width: 600px" :model="Form" :rules="rules" label-width="auto">
             <el-form-item label="旧密码" prop="oldpassword">
                 <el-input v-model="Form.oldpassword" type="password" autocomplete="off" />
             </el-form-item>
             <el-form-item label="新密码" prop="password">
                 <el-input v-model="Form.password" type="password" show-password />
             </el-form-item>
-            <el-form-item label="确认密码" prop="repassword" type="password" show-password>
-                <el-input v-model="Form.repassword" />
+            <el-form-item label="确认密码" prop="repassword">
+                <el-input v-model="Form.repassword" type="password" show-password />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="handleRePassword">
-                   确认
+                    确认
                 </el-button>
-                <el-button @click="resetSubmit(FormRef)">取消</el-button>
+                <el-button @click="resetSubmit()">取消</el-button>
             </el-form-item>
         </el-form>
     </el-drawer>
@@ -67,34 +66,33 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { logout, updatepassword } from '@/api/menager.js'
 import { useFullscreen } from '@vueuse/core'
-import { ref } from "vue"
-import { reactive } from 'vue';
+import { ref, reactive } from "vue"
 
 //安装npm i @vueuse/core
 const {
     //是否全屏
-    isFullscreen, enter, exit,
+    isFullscreen,
     //调用方法
     toggle } = useFullscreen()
 
-    const FormRef=ref()
-    const Form=reactive({
-        oldpassword:'',
-        password:'',
-        repassword:''
-    })
+const FormRefs = ref()
+const Form = reactive({
+    oldpassword: '',
+    password: '',
+    repassword: ''
+})
 
-    const rules={
-        oldpassword:[
-            {required:true,message:'请输入旧密码',trigger:'blur'}
-        ],
-        password:[
-            {required:true,message:'请输入新密码',trigger:'blur'}
-        ],
-        repassword:[
-            {required:true,message:'请输入确认密码',trigger:'blur'}
-        ],
-    }
+const rules = {
+    oldpassword: [
+        { required: true, message: '请输入旧密码', trigger: 'blur' }
+    ],
+    password: [
+        { required: true, message: '请输入新密码', trigger: 'blur' }
+    ],
+    repassword: [
+        { required: true, message: '请输入确认密码', trigger: 'blur' }
+    ],
+}
 
 
 const router = useRouter()
@@ -104,8 +102,9 @@ const store = useStore()
 // 修改密码操作
 const showDrawer = ref(false)
 const handleRePassword = () => {
-    updatepassword(Form).then(res => {
-      console.log(res);
+    updatepassword(Form).then(() => {
+        //修改成功提示
+        toast('修改成功', 'success')
     })
 }
 
@@ -124,8 +123,8 @@ const handleCommand = (e) => {
     }
 }
 
-const resetSubmit=(e)=>{
-    console.log(e);
+const resetSubmit = () => {
+    FormRefs.value.resetFields()
     showDrawer.value = false
 }
 

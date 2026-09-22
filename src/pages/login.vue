@@ -68,8 +68,9 @@ const rules = {
 
 const suFormReF = ref(null);
 const loading = ref(false)
-const router = new useRouter();
+const router = useRouter();
 const store = useStore()
+console.log(router)
 
 const submitForm = async () => {
   await suFormReF.value.validate((valid, fields) => {
