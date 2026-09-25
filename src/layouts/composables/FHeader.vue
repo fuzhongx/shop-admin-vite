@@ -13,7 +13,7 @@
         <el-icon class="icon-btn">
             <Refresh @click="handleRefresh" />
         </el-icon>
- 
+
         <div class="right">
             <el-icon class="FullScreen">
                 <FullScreen @click="toggle" v-if="!isFullscreen" />
@@ -21,8 +21,9 @@
             </el-icon>
             <el-dropdown class="dropdown" @command="handleCommand">
                 <span class="flex justify-center items-center text-light-50">
-                    <!-- <el-avatar :size="30" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" /> -->
-                    <el-avatar :size="30" :src="$store.state.user.avatar" />
+                    <el-avatar :size="30"
+                        src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" />
+                    <!-- <el-avatar :size="30" :src="$store.state.user.avatar" /> -->
 
                     <span class="ml-[5px]"> {{ $store.state.user.username }}</span>
                     <el-icon class="el-icon--right">
@@ -40,16 +41,16 @@
     </div>
 
     <!-- 修改密码 -->
-    <el-drawer v-model="showDrawer" title="修改密码">
-        <el-form ref="FormRefs" style="max-width: 600px" :model="Form" :rules="rules" label-width="auto">
+    <!-- <el-drawer v-model="showDrawer" title="修改密码">
+        <el-form ref="FormRefs" style="max-width: 600px" :model="FormData" :rules="rules" label-width="auto">
             <el-form-item label="旧密码" prop="oldpassword">
-                <el-input v-model="Form.oldpassword" type="password" autocomplete="off" />
+                <el-input v-model="FormData.oldpassword" type="password" autocomplete="off" />
             </el-form-item>
             <el-form-item label="新密码" prop="password">
-                <el-input v-model="Form.password" type="password" show-password />
+                <el-input v-model="FormData.password" type="password" show-password />
             </el-form-item>
             <el-form-item label="确认密码" prop="repassword">
-                <el-input v-model="Form.repassword" type="password" show-password />
+                <el-input v-model="FormData.repassword" type="password" show-password />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="handleRePassword">
@@ -58,15 +59,33 @@
                 <el-button @click="resetSubmit()">取消</el-button>
             </el-form-item>
         </el-form>
-    </el-drawer>
+    </el-drawer> -->
+
+    <FromDrawer ref="FormDrawerRef" title="修改密码" size="45%" @submit="submit">
+        <!-- 修改密码 -->
+        <el-form ref="FormRefs" style="max-width: 600px" :model="FormData" :rules="rules" label-width="auto">
+            <el-form-item label="旧密码" prop="oldpassword">
+                <el-input v-model="FormData.oldpassword" type="password" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="新密码" prop="password">
+                <el-input v-model="FormData.password" type="password" show-password />
+            </el-form-item>
+            <el-form-item label="确认密码" prop="repassword">
+                <el-input v-model="FormData.repassword" type="password" show-password />
+            </el-form-item>
+        </el-form>
+    </FromDrawer>
+
 </template>
 <script setup>
 import { showModel, toast } from '@/composables/util';
+import FromDrawer from '@/components/FromDrawer.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { logout, updatepassword } from '@/api/menager.js'
 import { useFullscreen } from '@vueuse/core'
 import { ref, reactive } from "vue"
+
 
 //安装npm i @vueuse/core
 const {
@@ -75,8 +94,9 @@ const {
     //调用方法
     toggle } = useFullscreen()
 
-const FormRefs = ref()
-const Form = reactive({
+const FormRefs = ref(null)
+const FormDrawerRef = ref(null)
+const FormData = reactive({
     oldpassword: '',
     password: '',
     repassword: ''
@@ -100,12 +120,23 @@ const store = useStore()
 
 
 // 修改密码操作
-const showDrawer = ref(false)
-const handleRePassword = () => {
-    updatepassword(Form).then(() => {
-        //修改成功提示
-        toast('修改成功', 'success')
+const submit = () => {
+    FormDrawerRef.value.showLoading()
+    FormRefs.value.validate((valid) => {
+        if (!valid) return
+
+        updatepassword(FormData).then(() => {
+            
+            FormDrawerRef.value.hideLoading()
+            //修改成功提示
+            toast('修改成功', 'success')
+
+        }).finally(err => {
+            FormDrawerRef.value.hideLoading()
+        })
     })
+
+
 }
 
 /**
@@ -118,15 +149,15 @@ const handleCommand = (e) => {
             handleLoyout()
             break;
         case 'rePassword':
-            showDrawer.value = true
+            FormDrawerRef.value.open()
             break;
     }
 }
 
-const resetSubmit = () => {
-    FormRefs.value.resetFields()
-    showDrawer.value = false
-}
+// const resetSubmit = () => {
+//     FormRefs.value.resetFields()
+//            FormRefs.value.close()
+// }
 
 //刷新
 const handleRefresh = () => location.reload()
