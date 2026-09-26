@@ -5,12 +5,19 @@ import { setToken, removeToken } from '@/composables/auto'
 const store = createStore({
   state() {
     return {
-      user: ''
+      user: '',
+      //菜单栏折叠宽度
+      asideWidth:'250px'
     }
   },
   mutations: {
     SET_USERINFO(state, user) {
       state.user = user
+    },
+
+   //菜单栏宽度
+    handleAsideWidth(state){
+        state.asideWidth=state.asideWidth=="250px"? '64px' :'250px'
     }
   },
   actions: {

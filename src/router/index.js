@@ -26,6 +26,13 @@ const routes = [
                     title: '后台首页'
                 },
             },
+             {
+                path: "/goods/list",
+                component: ()=>import('@/pages/goods/list.vue'),
+                meta: {
+                    title: '后台首页'
+                },
+            },
         ]
     },
     {

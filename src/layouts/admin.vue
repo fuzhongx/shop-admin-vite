@@ -4,7 +4,7 @@
             <FHeader />
         </el-header>
         <el-container>
-            <el-aside>
+            <el-aside :width="$store.state.asideWidth">
                 <FMenu></FMenu>
             </el-aside>
             <el-main>
@@ -21,6 +21,8 @@ import FMenu from '@/layouts/composables/FMenu.vue';
 import FHeader from '@/layouts/composables/FHeader.vue';
 </script>
 
-<style scoped>
-
+<style>
+.el-aside {
+    transition: all .2s;
+}
 </style>

@@ -1,23 +1,34 @@
 <template>
-    <div class="aside_Menus">
-        <el-menu default-active="2" class="el-menu-vertical-demo">
+    <div class="f-menu" :style="{ width: $store.state.asideWidth }">
+        <el-menu default-active="2"
+         class=" border-0" 
+         unique-opened
+         router 
+         :collapse-transition="false"
+         :collapse="isCollapse">
 
-            <template v-for="(item,index) in AsideMenus" :key="index">
+            <template v-for="(item, index) in AsideMenus" :key="index">
 
-                <el-sub-menu :index='item.frontpath' v-if="item && item.child.length > 0">
+                <el-sub-menu :index='item.name' v-if="item.child && item.child.length > 0">
                     <template #title>
-                         <el-icon><help/></el-icon>
+                        <el-icon>
+                            <component :is="item.icon"></component>
+                        </el-icon>
                         <span>{{ item.name }}</span>
                     </template>
-                    <el-menu-item :index=item2.frontpath v-for="(item2,index2) in item.child" :key="index2">
-                        <el-icon><icon-menu /></el-icon>
+                    <el-menu-item :index=item2.frontpath v-for="(item2, index2) in item.child" :key="index2">
+                        <el-icon>
+                            <component :is="item2.icon"></component>
+                        </el-icon>
                         <span>{{ item2.name }}</span>
                     </el-menu-item>
                 </el-sub-menu>
 
-                <el-menu-item :index=item.frontpath v-else v-for="(item) in AsideMenus" :key="item.name">
-                    <el-icon><icon-menu /></el-icon>
-                    <span>{{ item2.name }}</span>
+                <el-menu-item :index='item.name' v-else>
+                    <el-icon>
+                        <component :is="item.icon"></component>
+                    </el-icon>
+                    <span>{{ item.name }}</span>
                 </el-menu-item>
             </template>
         </el-menu>
@@ -25,18 +36,25 @@
 </template>
 
 <script setup>
-import {
-    Document,
-    Menu as IconMenu,
-    Location,
-    Setting,
-} from '@element-plus/icons-vue'
+import { computed, ref } from 'vue';
+import {useStore} from 'vuex'
+
+const store=useStore()
+
+// 是否折叠
+const isCollapse = computed(() =>!(store.state.asideWidth == "250px"))
+
+console.log(isCollapse.value);
 
 
 let AsideMenus = [
     {
+        "name": "主页",
+        "icon": "home-filled",
+    },
+    {
         "name": "后台面板",
-        "frontpath": '/',
+        "icon": "home-filled",
         "child": [{
             "name": "主控台",
             "icon": "home-filled",
@@ -45,7 +63,7 @@ let AsideMenus = [
     },
     {
         "name": "商品管理",
-        "frontpath": '/goods',
+        "icon": "shopping-cart-full",
         "child": [{
             "name": "商品管理",
             "icon": "shopping-cart-full",
@@ -55,15 +73,23 @@ let AsideMenus = [
 ]
 
 
+
+
+
 </script>
 
 <style scoped>
-.aside_Menus {
-    width: 250px;
+.f-menu {
     position: fixed;
+    transition: all .2s;
     top: 64px;
     left: 0;
     bottom: 0;
-    @apply shadow-400
+    overflow-y: auto;
+    overflow-x: hidden;
+    @apply shadow;
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 250px;
 }
 </style>

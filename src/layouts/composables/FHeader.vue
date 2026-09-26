@@ -7,8 +7,9 @@
             <span class="ml-1"> 旭日商城后台管理 </span>
         </span>
 
-        <el-icon class="icon-btn">
-            <Fold />
+        <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
+            <Fold v-if="$store.state.asideWidth =='250px'" />
+            <Expand v-else/>
         </el-icon>
         <el-icon class="icon-btn">
             <Refresh @click="handleRefresh" />
