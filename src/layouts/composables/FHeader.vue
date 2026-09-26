@@ -40,27 +40,6 @@
         </div>
     </div>
 
-    <!-- 修改密码 -->
-    <!-- <el-drawer v-model="showDrawer" title="修改密码">
-        <el-form ref="FormRefs" style="max-width: 600px" :model="FormData" :rules="rules" label-width="auto">
-            <el-form-item label="旧密码" prop="oldpassword">
-                <el-input v-model="FormData.oldpassword" type="password" autocomplete="off" />
-            </el-form-item>
-            <el-form-item label="新密码" prop="password">
-                <el-input v-model="FormData.password" type="password" show-password />
-            </el-form-item>
-            <el-form-item label="确认密码" prop="repassword">
-                <el-input v-model="FormData.repassword" type="password" show-password />
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="handleRePassword">
-                    确认
-                </el-button>
-                <el-button @click="resetSubmit()">取消</el-button>
-            </el-form-item>
-        </el-form>
-    </el-drawer> -->
-
     <FromDrawer ref="FormDrawerRef" title="修改密码" size="45%" @submit="submit">
         <!-- 修改密码 -->
         <el-form ref="FormRefs" style="max-width: 600px" :model="FormData" :rules="rules" label-width="auto">
@@ -78,13 +57,9 @@
 
 </template>
 <script setup>
-import { showModel, toast } from '@/composables/util';
 import FromDrawer from '@/components/FromDrawer.vue'
-import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
-import { logout, updatepassword } from '@/api/menager.js'
 import { useFullscreen } from '@vueuse/core'
-import { ref, reactive } from "vue"
+import { useRepassWord, uselLoyout } from '@/composables/useManager';
 
 
 //安装npm i @vueuse/core
@@ -94,50 +69,22 @@ const {
     //调用方法
     toggle } = useFullscreen()
 
-const FormRefs = ref(null)
-const FormDrawerRef = ref(null)
-const FormData = reactive({
-    oldpassword: '',
-    password: '',
-    repassword: ''
-})
+//修改密码    
+const {
+    FormData,
+    rules,
+    FormRefs,
+    FormDrawerRef,
+    rePasswordOpenDrawer,
+    showLoadig,
+    hideLoadig,
+    submit
+} = useRepassWord()
 
-const rules = {
-    oldpassword: [
-        { required: true, message: '请输入旧密码', trigger: 'blur' }
-    ],
-    password: [
-        { required: true, message: '请输入新密码', trigger: 'blur' }
-    ],
-    repassword: [
-        { required: true, message: '请输入确认密码', trigger: 'blur' }
-    ],
-}
-
-
-const router = useRouter()
-const store = useStore()
-
-
-// 修改密码操作
-const submit = () => {
-    FormDrawerRef.value.showLoading()
-    FormRefs.value.validate((valid) => {
-        if (!valid) return
-
-        updatepassword(FormData).then(() => {
-            
-            FormDrawerRef.value.hideLoading()
-            //修改成功提示
-            toast('修改成功', 'success')
-
-        }).finally(err => {
-            FormDrawerRef.value.hideLoading()
-        })
-    })
-
-
-}
+// 退出登录
+const {
+    handleLoyout
+} = uselLoyout()
 
 /**
  * 
@@ -149,31 +96,15 @@ const handleCommand = (e) => {
             handleLoyout()
             break;
         case 'rePassword':
-            FormDrawerRef.value.open()
+            // FormDrawerRef.value.open()
+            rePasswordOpenDrawer()//打开修改密码drawer
             break;
     }
 }
 
-// const resetSubmit = () => {
-//     FormRefs.value.resetFields()
-//            FormRefs.value.close()
-// }
 
 //刷新
 const handleRefresh = () => location.reload()
-
-const handleLoyout = () => {
-    showModel('是否退出登录').then(() => {
-        logout().finally(() => {
-            //清除token //清除用户状态 --可以在vuex里面操作
-            store.dispatch('logout')
-            // 跳转登录页
-            router.push('/login')
-            // 提示跳转成功
-            toast('退出成功！')
-        })
-    })
-}
 
 
 </script>
