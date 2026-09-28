@@ -5,12 +5,23 @@ import { setToken, removeToken } from '@/composables/auto'
 const store = createStore({
   state() {
     return {
+      //获取用户权限
       user: '',
+
       //菜单栏折叠宽度
-      asideWidth:'250px'
+      asideWidth:'250px',
+
+      // 菜单列表
+      menus:'',
+
+      //用户操作权限
+      ruleNmaes:'',
+
+
     }
   },
   mutations: {
+    // 登录成功后获取当前管理员信息和权限菜单
     SET_USERINFO(state, user) {
       state.user = user
     },
@@ -18,6 +29,16 @@ const store = createStore({
    //菜单栏宽度
     handleAsideWidth(state){
         state.asideWidth=state.asideWidth=="250px"? '64px' :'250px'
+    },
+   
+    //菜单列表
+    SET_MENUS(state,menus){
+      state.menus=menus
+    },
+
+    //用户操作权限
+    SET_RULENAMES(state,ruleNmaes){
+      state.ruleNmaes=ruleNmaes
     }
   },
   actions: {
@@ -36,6 +57,10 @@ const store = createStore({
       return new Promise((resolve, reject) => {
         getinfo().then(res => {
           commit('SET_USERINFO', res)
+          //菜单列表
+          commit('SET_MENUS',res.menus) 
+          //用户权限
+          commit('SET_RULENAMES',res.ruleNames)
           resolve(res)
         }).catch(err => reject(err))
       })

@@ -55,31 +55,7 @@ const defaultActive=ref(route.path)
 const isCollapse = computed(() =>!(store.state.asideWidth == "250px"))
 
 
-let AsideMenus = [
-    {
-        "name": "主页",
-        "icon": "home-filled",
-    },
-    {
-        "name": "后台面板",
-        "icon": "home-filled",
-        "child": [{
-            "name": "主控台",
-            "icon": "home-filled",
-            "frontpath": "/",
-        }]
-    },
-    {
-        "name": "商品管理",
-        "icon": "shopping-cart-full",
-        "child": [{
-            "name": "商品管理",
-            "icon": "shopping-cart-full",
-            "frontpath": "/goods/list",
-        }]
-    }
-]
-
+let AsideMenus =computed(()=>store.state.menus)
 
 
 
@@ -97,7 +73,9 @@ let AsideMenus = [
     overflow-x: hidden;
     @apply shadow;
 }
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 250px;
+
+/* 滚动轴宽度为0 */
+.f-menu::-webkit-scrollbar{
+width: 0px;
 }
 </style>
