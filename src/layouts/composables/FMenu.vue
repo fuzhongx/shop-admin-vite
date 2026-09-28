@@ -1,6 +1,6 @@
 <template>
     <div class="f-menu" :style="{ width: $store.state.asideWidth }">
-        <el-menu default-active="2"
+        <el-menu :default-active="defaultActive" @select="SelectMenu"
          class=" border-0" 
          unique-opened
          router 
@@ -38,13 +38,21 @@
 <script setup>
 import { computed, ref } from 'vue';
 import {useStore} from 'vuex'
+import { useRoute } from 'vue-router';
 
+const route=useRoute()
 const store=useStore()
+
+
+//监听激活菜单
+const SelectMenu=(e)=>{}
+
+
+// 默认选中
+const defaultActive=ref(route.path)
 
 // 是否折叠
 const isCollapse = computed(() =>!(store.state.asideWidth == "250px"))
-
-console.log(isCollapse.value);
 
 
 let AsideMenus = [
