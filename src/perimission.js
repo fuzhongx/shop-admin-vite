@@ -29,9 +29,8 @@ router.beforeEach(async (to, from, next) => {
     hasNewRoutes = addRouters(menus);
   }
 
-  console.log(to);
   // 设置动态标题
-  let title = (to.meta.title ? to.meta.title : "") + "-旭日商城后台管理系统";
+  let title = (to.meta.title ? to.meta.title : "") + "-厚和商城后台管理系统";
   document.title = title;
 
   //动态路由指定路由，不然刷新会丢失页面

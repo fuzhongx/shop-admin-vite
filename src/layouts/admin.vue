@@ -8,7 +8,7 @@
                 <FMenu></FMenu>
             </el-aside>
             <el-main>
-                <FTagList />
+                <div><FTagList /></div>
                 <router-view></router-view>
             </el-main>
         </el-container>

@@ -4,7 +4,7 @@
             <el-icon>
                 <ElemeFilled />
             </el-icon>
-            <span class="ml-1"> 旭日商城后台管理 </span>
+            <span class="ml-1"> 厚和商城后台管理 </span>
         </span>
 
         <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
@@ -117,6 +117,7 @@ const handleRefresh = () => location.reload()
 
 .FHeader .logo {
     width: 250px;
+    height: 64px;
     display: flex;
     justify-content: center;
     align-items: center;
