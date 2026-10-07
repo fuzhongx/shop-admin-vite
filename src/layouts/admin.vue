@@ -8,7 +8,7 @@
                 <FMenu></FMenu>
             </el-aside>
             <el-main>
-                <div><FTagList /></div>
+                <FTagList />
                 <router-view></router-view>
             </el-main>
         </el-container>
@@ -24,5 +24,9 @@ import FHeader from '@/layouts/composables/FHeader.vue';
 <style>
 .el-aside {
     transition: all .2s;
+}
+
+.el-main {
+ 
 }
 </style>

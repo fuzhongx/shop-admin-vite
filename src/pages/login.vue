@@ -73,7 +73,7 @@ const store = useStore()
 console.log(router)
 
 const submitForm = async () => {
-  await suFormReF.value.validate((valid, fields) => {
+  await suFormReF.value.validate((valid) => {
 
     if (!valid) return;
 

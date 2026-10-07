@@ -77,7 +77,7 @@ export function addRouters(meuns) {
   };
 
   findAddRouterNemus(meuns);
-  console.log(router.getRoutes());
+
 
 
   return hasNewRoutes
