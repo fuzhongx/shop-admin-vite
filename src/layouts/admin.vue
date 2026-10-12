@@ -8,8 +8,8 @@
                 <FMenu></FMenu>
             </el-aside>
             <el-main>
-                <FTagList />
-                <router-view></router-view>
+                <FTagList/>
+                <router-view class="content"></router-view>
             </el-main>
         </el-container>
     </el-container>
@@ -28,5 +28,9 @@ import FHeader from '@/layouts/composables/FHeader.vue';
 
 .el-main {
  
+}
+.content{
+    position: fixed;
+    top:108px;
 }
 </style>

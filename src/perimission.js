@@ -25,6 +25,7 @@ router.beforeEach(async (to, from, next) => {
   //判断用户登录之后，如果用户登录会自动获取管理员信息和权限菜单
   if (token) {
     const { menus } = await store.dispatch("getinfo");
+    console.log(menus);
     //动态添加路由
     hasNewRoutes = addRouters(menus);
   }

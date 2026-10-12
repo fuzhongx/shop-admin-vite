@@ -2,7 +2,7 @@
     <div>
         <el-result icon="warning" title="Warning Tip" sub-title="您 的 页 面 走 丢 了 。。。">
             <template #extra>
-                <el-button type="primary" @click='getback'>返回</el-button>
+                <el-button type="primary" @click='getback'>返回上一页</el-button>
             </template>
         </el-result>
     </div>
