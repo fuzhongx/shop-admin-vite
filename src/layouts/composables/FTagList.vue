@@ -1,7 +1,8 @@
 <template>
     <div :style="{ left: $store.state.asideWidth }" class="f-tabs">
-        <el-tabs v-model="tabsActive" type="card" style="min-width: 100px;">
-            <el-tab-pane v-for="item in tabsList" :key="item.path" :label="item.name" :name="item.path" closable>
+        <el-tabs v-model="tabsActive" type="card" style="min-width: 100px;" @tab-remove="removeTab">
+            <el-tab-pane v-for="item in tabsList" :key="item.path" :label="item.name" :name="item.path"
+                :closable="item.path != '/'">
             </el-tab-pane>
         </el-tabs>
         <span class="f-dra-btn">
@@ -24,33 +25,45 @@
 
 <script setup>
 import { ref } from 'vue'
-
+import { useCookies } from "@vueuse/integrations/useCookies";
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 const route = useRoute()
 
+const cookit=useCookies()
 
 const tabsActive = ref(route.path)
 const tabsList = ref([
     {
         name: '后台首页',
         path: '/',
-    },
-    {
-        name: '商城管理',
-        path: '/goods/list',
     }
 ])
 
-onBeforeRouteUpdate(e => {
- function tabsRoute(){
-        return {
-        name: e.meta.title,
-        path: e.fullPath
+// 添加标签tab导航
+function addTab(tab) {
+    let noTab = tabsList.value.findIndex(e => e.path == tab.path) == -1
+
+    if (noTab) {
+        tabsList.value.push(tab)
     }
-    }
-    tabsList.value.push( tabsRoute())
- 
+
+    cookit.set('tabsList',tabsList.value)
+}
+
+
+onBeforeRouteUpdate((to, from) => {
+    //点击触发
+    tabsActive.value=to.path
+
+    addTab({
+        name: to.meta.title,
+        path: to.path
+    })
 })
+
+const removeTab = (tabName) => {
+
+}
 
 </script>
 <style scoped>
