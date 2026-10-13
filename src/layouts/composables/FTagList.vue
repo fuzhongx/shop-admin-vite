@@ -1,6 +1,6 @@
 <template>
     <div :style="{ left: $store.state.asideWidth }" class="f-tabs">
-        <el-tabs v-model="tabsActive" type="card" style="min-width: 100px;" @tab-remove="removeTab">
+        <el-tabs v-model="tabsActive" type="card" style="min-width: 100px;" @tab-remove="removeTab"  @tab-change="changeTab">
             <el-tab-pane v-for="item in tabsList" :key="item.path" :label="item.name" :name="item.path"
                 :closable="item.path != '/'">
             </el-tab-pane>
@@ -26,21 +26,34 @@
 <script setup>
 import { ref } from 'vue'
 import { useCookies } from "@vueuse/integrations/useCookies";
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate, useRouter } from 'vue-router'
+
 const route = useRoute()
+const router=useRouter()
 
 const cookit=useCookies()
+
 
 const tabsActive = ref(route.path)
 const tabsList = ref([
     {
         name: '后台首页',
         path: '/',
-    }
+    },
 ])
+
+// 初始化tab导航列表
+function initTabList(){
+let tabs=cookit.get("tabsList")
+if(tabs){
+    tabsList.value=tabs
+}
+}
+ initTabList()
 
 // 添加标签tab导航
 function addTab(tab) {
+    //点击路由过滤相同路由
     let noTab = tabsList.value.findIndex(e => e.path == tab.path) == -1
 
     if (noTab) {
@@ -55,14 +68,36 @@ onBeforeRouteUpdate((to, from) => {
     //点击触发
     tabsActive.value=to.path
 
+    //添加选中tabs导航
     addTab({
         name: to.meta.title,
         path: to.path
     })
 })
+const changeTab=(t)=>{
+  tabsActive.value=t
+  router.push(t)
+  
+}
 
-const removeTab = (tabName) => {
-
+const removeTab = (t) => {
+  let a=tabsActive.value
+  let tabs=tabsList.value
+  if(a==t){
+    tabs.forEach((tab,index)=>{
+       if(tab.path==t){
+          const nextTab=tab[index+1]||tabs[index-1]
+          if(nextTab){
+            a=nextTab.path  
+            console.log(nextTab);
+            router.push(nextTab.path)
+          }
+       }
+    })
+  }
+  tabsActive.value=a
+  tabsList.value=tabsList.value.filter(v=>v.path !=t)
+  cookit.set('tabsList',tabsList.value)
 }
 
 </script>
