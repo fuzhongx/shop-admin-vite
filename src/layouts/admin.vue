@@ -8,8 +8,12 @@
                 <FMenu></FMenu>
             </el-aside>
             <el-main>
-                <FTagList/>
-                <router-view class="content"></router-view>
+                <FTagList />
+                <router-view v-slot="{ Component }">
+                    <KeepAlive :max="7">
+                        <component :is="Component"></component>
+                    </KeepAlive>
+                </router-view>
             </el-main>
         </el-container>
     </el-container>
@@ -19,6 +23,7 @@
 import FTagList from '@/layouts/composables/FTagList.vue';
 import FMenu from '@/layouts/composables/FMenu.vue';
 import FHeader from '@/layouts/composables/FHeader.vue';
+import { KeepAlive } from 'vue';
 </script>
 
 <style>
@@ -26,11 +31,5 @@ import FHeader from '@/layouts/composables/FHeader.vue';
     transition: all .2s;
 }
 
-.el-main {
- 
-}
-.content{
-    position: fixed;
-    top:108px;
-}
+.el-main {}
 </style>

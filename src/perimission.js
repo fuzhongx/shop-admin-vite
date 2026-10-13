@@ -4,6 +4,8 @@ import { toast, showFullLoading, hideFullLoading } from "./composables/util";
 import store from "./store/store";
 
 //全局路由守卫
+
+let hasGetInfo=false //防止点击路由会调用两次接口
 router.beforeEach(async (to, from, next) => {
   //进度条显示
   showFullLoading();
@@ -22,10 +24,11 @@ router.beforeEach(async (to, from, next) => {
   }
 
   let hasNewRoutes = false; //判断是否有新路由
+
   //判断用户登录之后，如果用户登录会自动获取管理员信息和权限菜单
-  if (token) {
+  if (token&& !hasGetInfo) {   //hasGetInfo 为ture时不允许调用
     const { menus } = await store.dispatch("getinfo");
-    console.log(menus);
+    hasGetInfo=true //调用之后为true
     //动态添加路由
     hasNewRoutes = addRouters(menus);
   }
