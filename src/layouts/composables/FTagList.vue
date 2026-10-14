@@ -54,6 +54,7 @@ const {
 
 ::v-deep .el-tabs__header {
     margin: 0 !important;
+    border: 0;
 }
 
 ::v-deep .el-tabs__nav {

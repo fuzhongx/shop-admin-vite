@@ -16,4 +16,5 @@ export function getToken() {
 //清除token
 export function removeToken() {
     return cookie.remove(TokenKey)
+   
 }

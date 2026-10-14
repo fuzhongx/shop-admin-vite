@@ -10,9 +10,12 @@
             <el-main>
                 <FTagList />
                 <router-view v-slot="{ Component }">
-                    <KeepAlive :max="7">
-                        <component :is="Component"></component>
-                    </KeepAlive>
+                    <Transition name="fade">
+                        <KeepAlive :max="7">
+                            <component :is="Component"></component>
+                        </KeepAlive>
+                    </Transition>
+
                 </router-view>
             </el-main>
         </el-container>
@@ -31,5 +34,29 @@ import { KeepAlive } from 'vue';
     transition: all .2s;
 }
 
-.el-main {}
+.fade-enter-from {
+    opacity: 0;
+}
+
+.fade-enter-to {
+    opacity: 1;
+}
+
+.fade-leave-from {
+    opacity: 1;
+}
+
+.fade-leave-to {
+    opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.3s;
+}
+.fade-enter-active{
+transition-delay: 0.3s;   /* 延迟0.3s显示 */
+}
+
+
 </style>

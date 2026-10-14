@@ -71,7 +71,7 @@ let AsideMenus =computed(()=>store.state.menus)
     bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    @apply shadow;
+    @apply  bg-white;
 }
 
 /* 滚动轴宽度为0 */
