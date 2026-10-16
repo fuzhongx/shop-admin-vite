@@ -51,7 +51,16 @@
         </el-card>
       </el-col>
     </el-row>
+    
     <indexNavs></indexNavs>
+
+    <el-row :gutter="20">
+      <el-col :span="12" :offset="0">
+        <div></div>
+      </el-col>
+      <el-col :span="12" :offset="0"></el-col>
+    </el-row>
+
 
   </div>
 </template>
