@@ -1,8 +1,7 @@
 <template>
   <div>
-    
-      <el-row :gutter="20">
-        <template v-if="panels.length ==0">
+    <el-row :gutter="20">
+      <template v-if="panels.length == 0">
         <el-col :span="6" :offset="0" v-for="i in 4" :key="i">
           <el-skeleton style="width: 100%;" animated loading>
             <template #template>
@@ -25,8 +24,8 @@
             </template>
           </el-skeleton>
         </el-col>
-        </template>
-      </el-row>
+      </template>
+    </el-row>
 
     <el-row :gutter="20">
       <el-col :span="6" :offset="0" v-for="(item, index) in panels" :key="index">
@@ -41,7 +40,9 @@
               </span>
             </div>
           </template>
-          <span class=" text-3xl font-bold text-gray-500"> <CountTo :value="item.value"/></span>
+          <span class=" text-3xl font-bold text-gray-500">
+            <CountTo :value="item.value" />
+          </span>
           <el-divider />
           <div class="f-subTitle text-sm text-gray-500">
             <span>{{ item.subTitle }}</span>
@@ -50,12 +51,16 @@
         </el-card>
       </el-col>
     </el-row>
+    <indexNavs></indexNavs>
+
   </div>
 </template>
 <script setup>
 import { ref } from 'vue'
 import { statistics1 } from '@/api/index.js'
 import CountTo from "@/components/CountTo.vue"
+import indexNavs from "@/components/indexNavs.vue"
+
 const panels = ref([])
 
 statistics1().then(res => {
