@@ -2,7 +2,7 @@
     <div>
         <el-row :gutter="20" class="py-4 flex justify-between">
             <el-col :span="3" :offset="0" v-for="item in iconNavs" :key="item.path">
-                <el-card shadow="hover" @click="handleLink(item)">
+                <el-card shadow="hover" @click="handleLink(item)" class="cursor-pointer">
                     <div class="flex flex-col justify-center items-center">
                         <el-icon :size="20" :class="item.color">
                             <component :is="item.icon"></component>

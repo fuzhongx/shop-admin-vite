@@ -113,6 +113,7 @@ const handleRefresh = () => location.reload()
 .FHeader {
     height: 64px;
     @apply flex fixed right-0 left-0 top-0 items-center bg-indigo-700 text-light-50;
+    z-index: 1000;
 }
 
 .FHeader .logo {

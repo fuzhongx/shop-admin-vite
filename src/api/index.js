@@ -12,3 +12,27 @@ export function statistics1(data){
        data
    })
 }
+
+/**
+* 
+* @param {商品及提示} 
+* @returns 店铺及商品提示
+*/
+export function statistics2(){
+    return axios({
+        url:`/admin/statistics2`,
+        method:'get'
+    })
+ }
+
+/**
+* 
+* @param {日期} type 
+* @returns 主页图表1
+*/
+export function statistics3(type){
+    return axios({
+        url:`/admin/statistics3?type=${type}`,
+        method:'get'
+    })
+ }
