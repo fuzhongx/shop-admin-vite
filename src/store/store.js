@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 import { login, getinfo } from "@/api/menager.js";
-import { setToken, removeToken } from '@/composables/auto'
+import { setToken, removeToken ,removeNavlist} from '@/composables/auto'
 
 const store = createStore({
   state() {
@@ -70,6 +70,9 @@ const store = createStore({
     logout({ commit }) {
       //清除token
       removeToken()
+
+      //清楚列表数据
+      removeNavlist()
 
       // 清除用户状态
       commit('SET_USERINFO',{})
