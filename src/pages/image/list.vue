@@ -3,13 +3,17 @@
       <el-header class="image-header">Header</el-header>
       <el-container>
          <el-aside width="220px" class="image-aside">
-            <div class="top" v-for="i in 30" :key="i"> {{ i }}</div>
+            <div class="top" > 
+               <div v-for="i in 30" :key="i">{{ i }}</div>
+            </div>
             <div class="bottom">
                分页
             </div>
          </el-aside>
          <el-main class="image-main">
-            <div class="top" v-for="i in 30" :key="i"> {{ i}}</div>
+            <div class="top" > 
+               <div v-for="i in 30" :key="i">{{ i }}</div>
+            </div>
             <div class="bottom">
                分页
             </div>
@@ -28,7 +32,6 @@ const h = clinetHeight - 64 - 44 - 40
    border-bottom: 1px solid #eeeeee;
    display: flex;
    align-items: center;
-
 }
 
 .image-aside {
@@ -40,15 +43,16 @@ const h = clinetHeight - 64 - 44 - 40
   
 }
 
-.image-main .top, 
-.image-aside .top {
+ .image-main .top, 
+.image-aside .top { 
    position: absolute;
    top: 0;
    right: 0;
    left: 0;
    bottom: 50px;
    overflow-y: auto;
-}
+   
+} 
 .image-main .bottom,
 .image-aside .bottom {
    height: 50px;
