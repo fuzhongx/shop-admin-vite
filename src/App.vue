@@ -26,6 +26,7 @@ display: block;
 /* 滚动条小方块 */
 ::-webkit-scrollbar-thumb{
 border-radius: 8px;
+height: 4px;
 background-color: rgba(0, 0, 0, 0.2);
 }
 </style>

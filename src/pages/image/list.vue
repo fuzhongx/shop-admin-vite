@@ -2,27 +2,16 @@
    <el-container class="bg-white rounded" :style="{ height: (h + 'px') }">
       <el-header class="image-header">Header</el-header>
       <el-container>
-         <el-aside width="220px" class="image-aside">
-            <div class="top" > 
-               <div v-for="i in 30" :key="i">{{ i }}</div>
-            </div>
-            <div class="bottom">
-               分页
-            </div>
-         </el-aside>
-         <el-main class="image-main">
-            <div class="top" > 
-               <div v-for="i in 30" :key="i">{{ i }}</div>
-            </div>
-            <div class="bottom">
-               分页
-            </div>
-         </el-main>
+        <ImageAside/>
+        <ImageMain/>
       </el-container>
    </el-container>
 </template>
 
 <script setup>
+
+import ImageAside from '@/components/ImageAside.vue'
+import ImageMain from '@/components/ImageMain.vue'
 const clinetHeight = window.innerHeight || document.body.clientHeight  //获取到屏幕可视化高度，或者内容区域高度
 const h = clinetHeight - 64 - 44 - 40
 </script>
