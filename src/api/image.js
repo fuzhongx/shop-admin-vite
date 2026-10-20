@@ -19,7 +19,7 @@ export function GetImageClassList(page){
 */
 export function GetImageClass(id,page){
     return axios({
-        url:`/admin/image_class/:id/image/:page?limit=10`,
+        url:'/admin/image_class/'+id+'/image/'+page,
         method:'get',
     })
  }
