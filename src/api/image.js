@@ -23,3 +23,17 @@ export function GetImageClass(id,page){
         method:'get',
     })
  }
+
+//新增图库
+ export function CreateImageClass(data){
+    return axios({
+        url:'/admin/image_class',
+        method:'post',
+        data
+    })
+ }
+
+//更新图库
+  export function UpdateImageClass(id,data){
+    return axios.post('admin/image_class/'+id,data)
+ }

@@ -1,20 +1,21 @@
 <template>
     <el-aside width="220px" class="image-aside" v-loading="loading">
         <div class="top">
-            <AsideList :active="activeId == item.id" v-for="(item, index) in list" :key="index" @click="handleChange(item)">
+            <AsideList :active="activeId == item.id" v-for="(item, index) in list" :key="index"
+                @click="handleChange(item)" @edit="handleUndateImage(item)">
                 {{ item.name }}</AsideList>
         </div>
         <div class="bottom">
             <el-pagination background layout="prev, next" :total="total" :current-page="currenPage" :page-size="limit"
                 @current-change="getData" />
         </div>
-        <FromDrawer title="新增" ref="fromDrawerRef" @submit="handleSubmit">
+        <FromDrawer :title="drawerTitle" ref="fromDrawerRef" @submit="handleSubmit">
             <el-form ref="formRef" :model="form" :rules="rules" label-width="120px">
                 <el-form-item label="图库分类名称" prop="name">
-                    <el-input placeholder="请填写图库分类名称" :maxLength="20" v-model="form.name" ></el-input>
+                    <el-input placeholder="请填写图库分类名称" v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="排序">
-                    <el-input-number v-model="form.order" :step="1" />
+                <el-form-item label="排序" prop="order">
+                    <el-input-number v-model="form.order" :step="1" :min="0" />
                 </el-form-item>
             </el-form>
         </FromDrawer>
@@ -23,9 +24,16 @@
 <script setup>
 import AsideList from '@/components/AsideList.vue';
 import FromDrawer from '@/components/FromDrawer.vue'
-import { ref,reactive } from 'vue'
+import { toast } from '@/composables/util.js'
+import { ref, reactive, computed } from 'vue'
 
-import { GetImageClassList, GetImageClass } from '@/api/image.js'
+import {
+    GetImageClassList,
+    CreateImageClass,
+    UpdateImageClass,
+    GetImageClass,
+} from '@/api/image.js'
+
 
 //加载动画
 const loading = ref(false)
@@ -66,26 +74,61 @@ function getData(p = null) {
 }
 getData()
 
+const editId = ref(0) //用于区分修改/新增
+const drawerTitle = computed(() => editId.value ? '修改' : '新增')
+
 const form = reactive({
     name: '',
-    order: ''
+    order: 50
 })
 
 const rules = {
     name: [{ required: true, message: '图库分类不能为空', trigger: 'blur' }]
 }
-const formRef=ref(null)
+const formRef = ref(null)
 
 const fromDrawerRef = ref(null)
-const handleOpen = () => {
-    fromDrawerRef.value.open()
-}
+
 const handleSubmit = () => {
-    console.log('提交表单');
+    fromDrawerRef.value.showLoading()
+    formRef.value.validate((valid) => {
+        if (!valid) return
+        let fun = editId.value ? UpdateImageClass(editId.value,form) : CreateImageClass(form)
+        fun.then(res => {
+            fromDrawerRef.value.hideLoading()
+            toast(drawerTitle.value + '成功')
+            fromDrawerRef.value.close()
+             getData(editId.value?currenPage.value : 1) 
+        }).finally(() => {
+            fromDrawerRef.value.hideLoading()
+        })
+    })
+
 }
 
+
+//新增
+const handleCreateImage = () => {
+     editId.value=0
+    form.name = '',
+    form.order = 50
+    fromDrawerRef.value.open()
+}
+
+//修改图库
+const handleUndateImage = (row) => {
+    editId.value = row.id
+    form.name = row.name
+    form.order = row.order
+    fromDrawerRef.value.open()
+
+    console.log(row)
+}
+
+
+
 defineExpose({
-    handleOpen
+    handleCreateImage
 })
 
 //image列表数据

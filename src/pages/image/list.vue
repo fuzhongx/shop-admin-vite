@@ -2,11 +2,9 @@
    <el-container class="bg-white rounded" :style="{ height: (h + 'px') }">
       <el-header class="image-header">
          <el-button type="primary" size="small" @click="handleOpenCreate">新增图库分类</el-button>
-
       </el-header>
       <el-container>
          <ImageAside ref="ImageAsideRef" />
-        
          <ImageMain />
       </el-container>
    </el-container>
@@ -22,10 +20,8 @@ const h = clinetHeight - 64 - 44 - 40
 const ImageAsideRef = ref(null)
 
 
-
-
 const handleOpenCreate = () => {
-   ImageAsideRef.value.handleOpen()
+   ImageAsideRef.value.handleCreateImage()
 }
 </script>
 
