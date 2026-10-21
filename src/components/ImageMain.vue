@@ -1,11 +1,23 @@
 <template>
-   <el-main class="image-main">
+   <el-main class="image-main" v-loading="loading">
       <div class="top">
-         <div v-for="(item, index) in list" :key="index">{{ item }}</div>
+         <el-row :gutter="20">
+            <el-col :span="6" :offset="0" v-for="(item, index) in list" :key="index" >
+               <el-card shadow="hover" clsss="imageCard" class="relative">
+                    <el-image  :src="item.url" :fit="cover"  class="h[150px]"/> 
+               </el-card>
+               <div class="image-title">{{ item.name }}</div>
+               <div>
+                  <el-button link type="primary" clsss="text-sm">重命名</el-button>
+                  <el-button link  type="primary" class="text-sm">删除</el-button>
+               </div>
+            </el-col>
+         </el-row>
+
       </div>
       <div class="bottom">
-         <el-pagination background layout="prev,pager, next" :total="total" :current-page="currenPage" :page-size="limit"
-            @current-change="getData" />
+         <el-pagination background layout="prev,pager, next" :total="total" :current-page="currenPage"
+            :page-size="limit" @current-change="getData" />
       </div>
    </el-main>
 </template>
@@ -33,7 +45,7 @@ function getData(p = null) {
    }
    loading.value = true
    GetImageClass(ActiveImageID.value, currenPage.value).then(res => {
-      console.log(res,'下拉图表数据');
+      console.log(res, '下拉图表数据');
       total.value = Number(res.totalCount) || 0
       loading.value = false
       list.value = res.list
@@ -68,7 +80,6 @@ defineExpose({
    left: 0;
    bottom: 50px;
    overflow-y: auto;
-
 }
 
 .image-main .bottom {
@@ -78,5 +89,15 @@ defineExpose({
    left: 0;
    bottom: 0;
    @apply flex justify-center items-center;
+}
+.image-title{
+   display: absolute;
+   top: 112px;
+   left: -1px;
+   right: -1px;
+   overflow: hidden;
+   text-overflow:ellipsis;
+   white-space: nowrap;
+   @apply text-sm text-gray-200 bg-gray-500 bg-opacity-50 px-2 py-1;
 }
 </style>
