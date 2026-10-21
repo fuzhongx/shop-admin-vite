@@ -1,16 +1,17 @@
 <template>
    <el-main class="image-main" v-loading="loading">
       <div class="top">
-         <el-row :gutter="20">
+         <el-row :gutter="20" class="p-3">
             <el-col :span="6" :offset="0" v-for="(item, index) in list" :key="index" >
-               <el-card shadow="hover" clsss="imageCard" class="relative">
-                    <el-image  :src="item.url" :fit="cover"  class="h[150px]"/> 
-               </el-card>
+               <el-card shadow="hover"  class="relative mb-3" ::body-style="{'padding':0}">
+                    <el-image  :src="item.url" :fit="cover"  class="h-[150px]" style="width: 100%;"/> 
+            
                <div class="image-title">{{ item.name }}</div>
-               <div>
-                  <el-button link type="primary" clsss="text-sm">重命名</el-button>
-                  <el-button link  type="primary" class="text-sm">删除</el-button>
+               <div class="flex justify-center items-center p-2">
+                  <el-button link type="primary" size="small">重命名</el-button>
+                  <el-button link  type="primary"  size="small">删除</el-button>
                </div>
+                  </el-card>
             </el-col>
          </el-row>
 
@@ -92,12 +93,13 @@ defineExpose({
 }
 .image-title{
    display: absolute;
-   top: 112px;
+   top: 122px;
    left: -1px;
    right: -1px;
+   bottom: 50px;
    overflow: hidden;
    text-overflow:ellipsis;
    white-space: nowrap;
-   @apply text-sm text-gray-200 bg-gray-500 bg-opacity-50 px-2 py-1;
+   @apply text-sm text-gray-100 bg-gray-800 bg-opacity-50 px-2 py-1;
 }
 </style>
