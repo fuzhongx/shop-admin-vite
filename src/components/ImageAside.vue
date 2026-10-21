@@ -2,7 +2,7 @@
     <el-aside width="220px" class="image-aside" v-loading="loading">
         <div class="top">
             <AsideList :active="activeId == item.id" v-for="(item, index) in list" :key="index"
-                @click="handleChangeID(item)" @edit="handleUndateImage(item)" @delete="handleDelete(item.id)">
+                @click="handleChangeID(item.id)" @edit="handleUndateImage(item)" @delete="handleDelete(item.id)" >
                 {{ item.name }}</AsideList>
         </div>
         <div class="bottom">
@@ -32,14 +32,13 @@ import {
     CreateImageClass,
     UpdateImageClass,
     DeleteImageClass,
-    GetImageClass,
 } from '@/api/image.js'
 
 
 //加载动画
 const loading = ref(false)
 const list = ref([])
-const activeId = ref(0)
+
 
 // 分页
 const currenPage = ref(1)
@@ -47,9 +46,12 @@ const total = ref(1)
 const limit = ref(10)
 
 
-
+/**
+ * 
+ * @param {页数} p 
+ */
 //获取数据
-function getData(p = null) {
+function getData(p=null) {
     if (typeof p == 'number') {
         currenPage.value = p
     }
@@ -62,7 +64,6 @@ function getData(p = null) {
         if (item) {
             handleChangeID(item.id)
         }
-        getImageList()
     }).finally(() => {
         loading.value = false
     })
@@ -131,25 +132,18 @@ const handleDelete=(id)=>{
     })
 }
 
+//选中的ID
+const activeId = ref(1)
+const emit= defineEmits(['change'])
 // 选中状态
-const handleChangeID = (v) => {
-    activeId.value = v.id
+const handleChangeID = (change_class_id) => {
+    activeId.value =change_class_id
+    emit('change',change_class_id) //每点击点击调用一次chang这个函数
 }
-
-defineEmits(['chageID'])
 
 defineExpose({
     handleCreateImage
 })
-
-//image列表数据
-function getImageList() {
-    GetImageClass(activeId.value, 1).then(res => {
-        console.log(res, '列表下拉');
-    })
-
-}
-
 
 </script>
 <style scoped>

@@ -4,14 +4,14 @@
          <el-button type="primary" size="small" @click="handleOpenCreate">新增图库分类</el-button>
       </el-header>
       <el-container>
-         <ImageAside ref="ImageAsideRef" />
-         <ImageMain  @changeID="GetChangeAsideID"/>
+         <ImageAside ref="ImageAsideRef" @change="GetChangeAsideID"/>
+         <ImageMain  ref="ImageMainRef"/>
       </el-container>
    </el-container>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import ImageAside from '@/components/ImageAside.vue'
 import ImageMain from '@/components/ImageMain.vue'
 const clinetHeight = window.innerHeight || document.body.clientHeight  //获取到屏幕可视化高度，或者内容区域高度
@@ -24,12 +24,13 @@ const handleOpenCreate = () => {
    ImageAsideRef.value.handleCreateImage()
 }
 
-const GetChangeAsideID=(v)=>{
-   console.log(v);
-   
-// ImageAsideRef.value.loadData()
-}
+const ImageMainRef=ref(null)
 
+//aside传过来的方法
+const GetChangeAsideID=(image_class_id)=>{
+   //调用list主页抛送的方法
+   ImageMainRef.value.loadingData(image_class_id)
+}
 
 </script>
 
