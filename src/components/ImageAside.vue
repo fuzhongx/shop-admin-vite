@@ -2,7 +2,7 @@
     <el-aside width="220px" class="image-aside" v-loading="loading">
         <div class="top">
             <AsideList :active="activeId == item.id" v-for="(item, index) in list" :key="index"
-                @click="handleChange(item)" @edit="handleUndateImage(item)">
+                @click="handleChangeID(item)" @edit="handleUndateImage(item)" @delete="handleDelete(item.id)">
                 {{ item.name }}</AsideList>
         </div>
         <div class="bottom">
@@ -31,6 +31,7 @@ import {
     GetImageClassList,
     CreateImageClass,
     UpdateImageClass,
+    DeleteImageClass,
     GetImageClass,
 } from '@/api/image.js'
 
@@ -46,11 +47,6 @@ const total = ref(1)
 const limit = ref(10)
 
 
-// 选中状态
-const handleChange = (v) => {
-    activeId.value = v.id
-}
-
 
 //获取数据
 function getData(p = null) {
@@ -64,7 +60,7 @@ function getData(p = null) {
         list.value = res.list
         let item = res.list[0]
         if (item) {
-            activeId.value = item.id
+            handleChangeID(item.id)
         }
         getImageList()
     }).finally(() => {
@@ -89,6 +85,8 @@ const formRef = ref(null)
 
 const fromDrawerRef = ref(null)
 
+
+//Drawer提交删除新增功能
 const handleSubmit = () => {
     fromDrawerRef.value.showLoading()
     formRef.value.validate((valid) => {
@@ -125,7 +123,20 @@ const handleUndateImage = (row) => {
     console.log(row)
 }
 
+//删除
+const handleDelete=(id)=>{
+    DeleteImageClass(id).then(res=>{
+        toast('删除成功')
+        getData(currenPage.value)
+    })
+}
 
+// 选中状态
+const handleChangeID = (v) => {
+    activeId.value = v.id
+}
+
+defineEmits(['chageID'])
 
 defineExpose({
     handleCreateImage

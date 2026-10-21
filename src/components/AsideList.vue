@@ -6,11 +6,16 @@
                 <Edit />
             </el-icon>
         </el-button>
-        <el-button link  size="small" type="primary" class="px-1"  @click="$emit('delete')">
+        <el-popconfirm title="是否要删除图库?" confirm-button-text="确认" cancel-button-text="取消" 
+        @confirm="$emit('delete')">
+         <template #reference>
+         <el-button link  size="small" type="primary" class="px-1">
             <el-icon :size="15">
                 <close />
             </el-icon>
         </el-button>
+        </template>
+        </el-popconfirm>
     </div>
 </template>
 <script setup>

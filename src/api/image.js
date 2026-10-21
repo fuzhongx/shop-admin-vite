@@ -37,3 +37,8 @@ export function GetImageClass(id,page){
   export function UpdateImageClass(id,data){
     return axios.post('admin/image_class/'+id,data)
  }
+ 
+ //删除图库
+  export function DeleteImageClass(id){
+    return axios.post(`/admin/image_class/${id}/delete`)
+ }

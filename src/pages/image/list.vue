@@ -5,7 +5,7 @@
       </el-header>
       <el-container>
          <ImageAside ref="ImageAsideRef" />
-         <ImageMain />
+         <ImageMain  @changeID="GetChangeAsideID"/>
       </el-container>
    </el-container>
 </template>
@@ -23,6 +23,14 @@ const ImageAsideRef = ref(null)
 const handleOpenCreate = () => {
    ImageAsideRef.value.handleCreateImage()
 }
+
+const GetChangeAsideID=(v)=>{
+   console.log(v);
+   
+// ImageAsideRef.value.loadData()
+}
+
+
 </script>
 
 <style scoped>
