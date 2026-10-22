@@ -29,4 +29,8 @@ border-radius: 8px;
 height: 4px;
 background-color: rgba(0, 0, 0, 0.2);
 }
+
+::v-deep.el-popconfirm__main{
+font-size: 12px;
+}
 </style>

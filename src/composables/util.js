@@ -22,6 +22,16 @@ export function showModel(content, title = '', type = 'warning') {
   )
 }
 
+//提交内容弹出框
+export function showPrompt(tip,value=''){
+ return ElMessageBox.prompt(tip, '', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    inputValue:value
+  })
+}
+
+
 //显示进度条
 export function showFullLoading() {
   nprogress.start()

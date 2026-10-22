@@ -2,31 +2,40 @@
    <el-main class="image-main" v-loading="loading">
       <div class="top">
          <el-row :gutter="20" class="p-3">
-            <el-col :span="6" :offset="0" v-for="(item, index) in list" :key="index" >
-               <el-card shadow="hover"  class="relative mb-3" ::body-style="{'padding':0}">
-                    <el-image  :src="item.url" :fit="cover"  class="h-[150px]" style="width: 100%;"/> 
-            
-               <div class="image-title">{{ item.name }}</div>
-               <div class="flex justify-center items-center p-2">
-                  <el-button link type="primary" size="small">重命名</el-button>
-                  <el-button link  type="primary"  size="small">删除</el-button>
-               </div>
-                  </el-card>
+            <el-col :span="6" :offset="0" v-for="(item, index) in list" :key="index">
+               <el-card shadow="hover" class="relative mb-3" ::body-style="{ 'padding': 0 }">
+                  <el-image :src="item.url" fit="cover" class="h-[150px]" style="width: 100%;"
+                     :preview-src-list="[item.url]" :initial-index="0" />
+
+                  <div class="image-title">{{ item.name }}</div>
+                  <div class="flex justify-center items-center p-2">
+                     <el-button link type="primary" size="small" @click="handleResetName(item)">重命名</el-button>
+                     <el-popconfirm title="是否要删除该图片?" cancel-button-text="取消" confirm-button-text="确认" class="text-sm">
+                      <template #reference>
+                       <el-button link type="primary" size="small" @click="handleDeeteImage(item.id)">删除</el-button>
+                      </template>
+                     </el-popconfirm>
+                  </div>
+               </el-card>
             </el-col>
          </el-row>
 
       </div>
       <div class="bottom">
-         <el-pagination background layout="prev,pager, next" :total="total" :current-page="currenPage"
-            :page-size="limit" @current-change="getData" />
+         <el-pagination background layout="prev,pager, next" :total="total" :current-page="currenPage" :page-size="limit"
+            @current-change="getData" />
       </div>
    </el-main>
 </template>
 <script setup>
 import { ref } from 'vue'
 import {
-   GetImageClass
+   GetImageClass,
+   UpdataImageName,
+   DeleteImage
 } from '@/api/image_class.js'
+
+import { showPrompt,toast } from '@/composables/util.js'
 
 const loading = ref(false)
 const list = ref([])
@@ -56,11 +65,32 @@ function getData(p = null) {
 
 }
 
+//调用对应方法获取image数据
 const loadingData = (image_class_id) => {
-   console.log(image_class_id);
    currenPage.value = 1
    ActiveImageID.value = image_class_id
    getData()
+}
+
+//重命名
+const handleResetName = (item) => {
+   showPrompt('重命名', item.name)
+      .then(({ value }) => {
+         loading.value = true
+         UpdataImageName(item.id, value).then(res => {
+            loading.value = false
+            toast('修改成功')
+            console.log('修改成功');
+            getData()
+         }).finally(() => {
+            loading.value = false
+         })
+      })
+}
+
+//删除图片
+const handleDeeteImage=(ids)=>{
+
 }
 
 defineExpose({
@@ -91,14 +121,15 @@ defineExpose({
    bottom: 0;
    @apply flex justify-center items-center;
 }
-.image-title{
+
+.image-title {
    display: absolute;
    top: 122px;
    left: -1px;
    right: -1px;
    bottom: 50px;
    overflow: hidden;
-   text-overflow:ellipsis;
+   text-overflow: ellipsis;
    white-space: nowrap;
    @apply text-sm text-gray-100 bg-gray-800 bg-opacity-50 px-2 py-1;
 }
