@@ -2,6 +2,7 @@
    <el-container class="bg-white rounded" :style="{ height: (h + 'px') }">
       <el-header class="image-header">
          <el-button type="primary" size="small" @click="handleOpenCreate">新增图库分类</el-button>
+          <el-button type="warning" size="small" @click="handleOpenUpload">上传图片</el-button>
       </el-header>
       <el-container>
          <ImageAside ref="ImageAsideRef" @change="GetChangeAsideID"/>
@@ -19,9 +20,14 @@ const h = clinetHeight - 64 - 44 - 40
 
 const ImageAsideRef = ref(null)
 
-
+//新增图【ian
 const handleOpenCreate = () => {
    ImageAsideRef.value.handleCreateImage()
+}
+
+//上传图片
+const handleOpenUpload=()=>{
+   ImageMainRef.value.handleOpenDrawer()
 }
 
 const ImageMainRef=ref(null)

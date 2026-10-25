@@ -21,3 +21,6 @@ export function GetImageClass(id,page=1){
   export function DeleteImage(ids){
     return axios.post(`/admin/image/delete_all`,{ids})
  }
+
+// 上传图片
+export const UploadAction='/api/admin/image/upload'

@@ -9,11 +9,13 @@
 
                   <div class="image-title">{{ item.name }}</div>
                   <div class="flex justify-center items-center p-2">
-                     <el-button link type="primary" size="small" @click="handleResetName(item)">重命名</el-button>
-                     <el-popconfirm title="是否要删除该图片?" cancel-button-text="取消" confirm-button-text="确认" class="text-sm">
-                      <template #reference>
-                       <el-button link type="primary" size="small" @click="handleDeeteImage(item.id)">删除</el-button>
-                      </template>
+                     <el-button link type="primary" size="small" @click="handleResetName(item)" v-loading="loading">重命名</el-button>
+                     <el-popconfirm title="是否要删除该图片?" cancel-button-text="取消" 
+                     confirm-button-text="确认" class="text-sm"
+                     @confirm="handleDeeteImage(item.id)">
+                        <template #reference>
+                           <el-button link type="primary" size="small">删除</el-button>
+                        </template>
                      </el-popconfirm>
                   </div>
                </el-card>
@@ -22,9 +24,14 @@
 
       </div>
       <div class="bottom">
-         <el-pagination background layout="prev,pager, next" :total="total" :current-page="currenPage" :page-size="limit"
-            @current-change="getData" />
+         <el-pagination background layout="prev,pager, next" :total="total" :current-page="currenPage"
+            :page-size="limit" @current-change="getData" />
       </div>
+      <el-drawer title="上传图片" v-model="drawer" direction="rtl" size="30%"
+        @click="handleOpenDrawer" >
+        <UploadFile :data="{image_class_id}" @success="UploadSuccess"/>
+      </el-drawer>
+      
    </el-main>
 </template>
 <script setup>
@@ -35,10 +42,21 @@ import {
    DeleteImage
 } from '@/api/image_class.js'
 
-import { showPrompt,toast } from '@/composables/util.js'
+import { showPrompt, toast } from '@/composables/util.js'
+
+import UploadFile from '@/components/UploadFile.vue';
 
 const loading = ref(false)
 const list = ref([])
+
+//上传图片
+const drawer=ref(false)
+const handleOpenDrawer=()=>drawer.value=true
+
+const UploadSuccess=()=>{
+   drawer.value=false
+   getData(1)
+}
 
 // 分页
 const currenPage = ref(1)
@@ -46,7 +64,7 @@ const total = ref(1)
 const limit = ref(10)
 
 //选中图库ID
-const ActiveImageID = ref(1)
+const image_class_id = ref(1)
 
 //获取数据分页按钮
 function getData(p = null) {
@@ -54,7 +72,7 @@ function getData(p = null) {
       currenPage.value = p
    }
    loading.value = true
-   GetImageClass(ActiveImageID.value, currenPage.value).then(res => {
+   GetImageClass(image_class_id.value, currenPage.value).then(res => {
       console.log(res, '下拉图表数据');
       total.value = Number(res.totalCount) || 0
       loading.value = false
@@ -66,9 +84,9 @@ function getData(p = null) {
 }
 
 //调用对应方法获取image数据
-const loadingData = (image_class_id) => {
+const loadingData = (image_id) => {
    currenPage.value = 1
-   ActiveImageID.value = image_class_id
+   image_class_id.value = image_id
    getData()
 }
 
@@ -80,7 +98,6 @@ const handleResetName = (item) => {
          UpdataImageName(item.id, value).then(res => {
             loading.value = false
             toast('修改成功')
-            console.log('修改成功');
             getData()
          }).finally(() => {
             loading.value = false
@@ -89,12 +106,20 @@ const handleResetName = (item) => {
 }
 
 //删除图片
-const handleDeeteImage=(ids)=>{
+const handleDeeteImage = (ids) => {
+   loading.value=true
+   DeleteImage([ids]).then(res => {
+      toast('删除成功')
+        getData()
+   }).finally(()=>{
+      loading.value=false
+   })
 
 }
 
 defineExpose({
-   loadingData
+   loadingData,
+   handleOpenDrawer
 })
 
 </script>
