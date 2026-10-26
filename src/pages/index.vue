@@ -87,8 +87,6 @@ const order=ref([])
 statistics2().then(res=>{
   goods.value=res.goods
   order.value=res.order
-  console.log(res);
-
 })
 
 </script>

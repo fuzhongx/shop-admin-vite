@@ -120,8 +120,6 @@ const handleUndateImage = (row) => {
     form.name = row.name
     form.order = row.order
     fromDrawerRef.value.open()
-
-    console.log(row)
 }
 
 //删除

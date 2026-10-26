@@ -73,7 +73,6 @@ function getData(p = null) {
    }
    loading.value = true
    GetImageClass(image_class_id.value, currenPage.value).then(res => {
-      console.log(res, '下拉图表数据');
       total.value = Number(res.totalCount) || 0
       loading.value = false
       list.value = res.list
