@@ -34,7 +34,7 @@
         <el-pagination background layout="prev, pager, next" :total="total" class="flex 
         justify-center items-center mt-3" :current-page="currenPage" :page-size="limit" @current-change="getData" />
 
-        <FormDrawer :title="changeActive ? '修改' : '新增'" @submit="handleCreateNotice" ref="FormDrawerRefs">
+        <FormDrawer :title="noticeTitle" @submit="handleCreateNotice" ref="FormDrawerRefs">
             <el-form :model="form" ref="formRef" :rules="rules" label-width="80px">
                 <el-form-item label="公告标题" prop="title">
                     <el-input v-model="form.title"></el-input>
@@ -49,7 +49,7 @@
     </el-card>
 </template>
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive,computed } from 'vue'
 import { getNoticeList, deleteNotice, createNotice, updateNotice } from '@/api/notice'
 import { toast } from '@/composables/util.js'
 import FormDrawer from '@/components/FromDrawer.vue'
@@ -106,6 +106,7 @@ const handleDelete = (id) => {
 const changeActive = ref(0)
 const FormDrawerRefs = ref(null)
 const formRef = ref(null)
+const noticeTitle=computed(()=>changeActive.value ? '修改': '新增')
 
 //修改
 const handleUpdateOpen = (row) => {
