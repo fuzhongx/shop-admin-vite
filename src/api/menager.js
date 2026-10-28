@@ -68,3 +68,13 @@ export function getManagerList(page, query={}) {
 export function updateMenagerStatus(id,status){
     return axios.post(`/admin/manager/${id}/update_status`,{status})
 }
+
+// 修改管理员
+export function updateMenager(id,data){
+    return axios.post(`/admin/manager/${id}`,{data})
+}
+
+// 删除管理员
+export function deleteMenager(id){
+    return axios.post(`/admin/manager/${id}/delete`)
+}

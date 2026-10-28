@@ -84,15 +84,25 @@
 
         <FormDrawer :title="noticeTitle" @submit="handleCreateNotice" ref="FormDrawerRefs">
             <el-form :model="form" ref="formRef" :rules="rules" label-width="80px">
-                <el-form-item label="管理员昵称" prop="title">
+                <el-form-item label="用户名" prop="title">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
-                <el-form-item label="ID" prop="content">
-                    <el-input v-model="form.content" type="textarea"></el-input>
+                <el-form-item label="密码" prop="title">
+                    <el-input v-model="form.title"></el-input>
                 </el-form-item>
-                <el-form-item label="状态" prop="content">
-                    <el-switch :modelValue="form.content" :active-value="1" :inactive-value="0">
-                    </el-switch>
+                <el-form-item label="角色ID" prop="content">
+                    <el-input v-model="form.content"></el-input>
+                </el-form-item>
+                <el-form-item label="角色ID" prop="content">
+                    <el-switch 
+                    :modelValue='form.content' 
+                    :active-value="1" 
+                    :inactive-value="0"
+                    > 
+                </el-switch>
+                </el-form-item>
+                <el-form-item label="头像" prop="content">
+                   <el-avatar icon="el-icon-user-solid" size="large" shape="circle" :src="www" fit="fill"></el-avatar>
                 </el-form-item>
             </el-form>
         </FormDrawer>
@@ -103,7 +113,8 @@ import { ref, reactive, computed } from 'vue'
 import { getNoticeList, deleteNotice, createNotice, updateNotice } from '@/api/notice'
 import {
     getManagerList,
-    updateMenagerStatus
+    updateMenagerStatus,
+    deleteMenager
 } from '@/api/menager'
 import { toast } from '@/composables/util.js'
 import FormDrawer from '@/components/FromDrawer.vue'
@@ -144,7 +155,7 @@ const getData = (p = null) => {
     }
     loading.value = true
     getManagerList(currenPage.value, {
-        limit: 10,
+        limit: 5,
         keyword: selectForm.keyWord
     }).then(res => {
        
@@ -174,8 +185,7 @@ const handleStatusChange = (status, row) => {
 // 删除
 const handleDelete = (id) => {
     loading.value = true
-    deleteNotice(id).then(res => {
-        loading.value = false
+    deleteMenager(id).then(res => {
         toast('删除成功')
         getData(currenPage.value)
     }).finally(() => {
