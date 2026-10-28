@@ -22,9 +22,9 @@
             </el-icon>
             <el-dropdown class="dropdown" @command="handleCommand">
                 <span class="flex justify-center items-center text-light-50">
-                    <el-avatar :size="30"
-                        src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" />
-                    <!-- <el-avatar :size="30" :src="$store.state.user.avatar" /> -->
+                    <!-- <el-avatar :size="30"
+                        src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" /> -->
+                    <el-avatar :size="30" :src="$store.state.user.avatar" />
 
                     <span class="ml-[5px]"> {{ $store.state.user.username }}</span>
                     <el-icon class="el-icon--right">

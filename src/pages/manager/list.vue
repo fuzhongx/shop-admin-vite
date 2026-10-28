@@ -1,32 +1,80 @@
 <template>
     <el-card shadow="never">
         <template #header>
-            <div class="flex items-center justify-between">
+            <el-form :model="selectForm" ref="selectFormRef" :inline="true">
+                <el-row :gutter="20" class="items-center">
+                    <el-col :lg="16" :md="12" :offset="0" class="flex items-center">
+                        <el-form-item label="关键字" class="text-black">
+                            <el-input v-model="selectForm.keyWord" placeholder="管理员昵称" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="8" :md="12" :offset="0">
+                        <div class="flex justify-end  items-center">
+                            <el-button type="primary" @click="getData">搜索</el-button>
+                            <el-button @click="resetSelectForm">重置</el-button>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <!-- 刷新和新增 -->
+            <!-- <div class="flex items-center justify-between">
                 <div>
                     <el-button type="primary" size="small" @click="handleCreateOpen">新增</el-button>
-
                 </div>
                 <div class="f-refresh">
                     <el-icon :size="20" color="gray" @click="handleRefresh">
                         <Refresh />
                     </el-icon>
                 </div>
-            </div>
+            </div> -->
         </template>
 
         <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
-            <el-table-column prop="content" label="公告标题" width="180" align="center" />
-            <el-table-column prop="create_time" label="发布时间" width="180" align="center" />
-            <el-table-column prop="update_time" label="更新时间" width="180" align="center" />
+            <el-table-column prop="content" label="管理员">
+                <template #default="{ row }">
+                    <div class="flex items-center">
+                        <div>
+                            <el-avatar icon="el-icon-user-solid" size="large" shape="circle" :src="row.avatar"
+                                fit="fill"></el-avatar>
+                        </div>
+                        <div class="ml-3">
+                            <h6>{{ row.username }}</h6>
+                            <small>ID:{{ row.id }}</small>
+                        </div>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="所属管理员" align="center">
+                <template #default="{ row }">
+                    {{ row.role?.name || '-' }}
+                </template>
+            </el-table-column>
+            <el-table-column label="状态" width="180" align="center">
+                <template #default="{ row }">
+                    <el-switch 
+                    :modelValue='row.status' 
+                    :active-value="1" 
+                    :inactive-value="0"
+                    :loading="row.statusLoading"
+                    :disabled="row.super == 1"
+                    @change="handleStatusChange($event, row)"> 
+                </el-switch>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" align="center">
                 <template #default="scope">
-                    <el-button type="primary" size="small" text @click="handleUpdateOpen(scope.row)">修改</el-button>
-                    <el-popconfirm title="是否删除该公告？" confirm-button-text="确认" cancel-button-text="取消"
-                        @confirm="handleDelete(scope.row.id)" width="200">
-                        <template #reference>
-                            <el-button type="primary" size="small" text>删除</el-button>
-                        </template>
-                    </el-popconfirm>
+                    <small v-if="scope.row.super == 1" class=" text-gray-500">暂无操作</small>
+                    <div v-else>
+                        <el-button type="primary" size="small" text @click="handleUpdateOpen(scope.row)">修改</el-button>
+                        <el-popconfirm title="是否删除该管理员？" confirm-button-text="确认" cancel-button-text="取消"
+                            @confirm="handleDelete(scope.row.id)" width="200">
+                            <template #reference>
+                                <el-button type="primary" size="small" text>删除</el-button>
+                            </template>
+                        </el-popconfirm>
+                    </div>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -36,23 +84,40 @@
 
         <FormDrawer :title="noticeTitle" @submit="handleCreateNotice" ref="FormDrawerRefs">
             <el-form :model="form" ref="formRef" :rules="rules" label-width="80px">
-                <el-form-item label="公告标题" prop="title">
+                <el-form-item label="管理员昵称" prop="title">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
-                <el-form-item label="公告内容" prop="content">
+                <el-form-item label="ID" prop="content">
                     <el-input v-model="form.content" type="textarea"></el-input>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item label="状态" prop="content">
+                    <el-switch :modelValue="form.content" :active-value="1" :inactive-value="0">
+                    </el-switch>
                 </el-form-item>
             </el-form>
         </FormDrawer>
     </el-card>
 </template>
 <script setup>
-import { ref, reactive,computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { getNoticeList, deleteNotice, createNotice, updateNotice } from '@/api/notice'
+import {
+    getManagerList,
+    updateMenagerStatus
+} from '@/api/menager'
 import { toast } from '@/composables/util.js'
 import FormDrawer from '@/components/FromDrawer.vue'
+
+
+const selectForm = reactive({
+    keyWord: ''
+})
+
+const selectFormRef = ref(null)
+const resetSelectForm = () => {
+    selectForm.keyWord = ''
+    getData()
+}
 
 const tableData = ref([])
 const loading = ref(false)
@@ -78,15 +143,33 @@ const getData = (p = null) => {
         currenPage.value = p
     }
     loading.value = true
-    getNoticeList(currenPage.value).then(res => {
+    getManagerList(currenPage.value, {
+        limit: 10,
+        keyword: selectForm.keyWord
+    }).then(res => {
+       
         loading.value = false
-        tableData.value = res.list
+        tableData.value = res.list.map(o=>{
+            o.statusLoading=false //自定义switch 按钮loading值
+            return o
+        })
         total.value = res.totalCount
     }).finally(() => {
         loading.value = false
     })
 }
 getData()
+
+//修改管理员状态
+const handleStatusChange = (status, row) => {
+    row.statusLoading=true
+    updateMenagerStatus(row.id, status).then(res => {
+        toast('修改状态成功')
+        row.status = status
+    }).finally(() => {
+        row.statusLoading=false
+    })
+}
 
 // 删除
 const handleDelete = (id) => {
@@ -106,10 +189,11 @@ const handleDelete = (id) => {
 const changeActive = ref(0)
 const FormDrawerRefs = ref(null)
 const formRef = ref(null)
-const noticeTitle=computed(()=>changeActive.value ? '修改': '新增')
+const noticeTitle = computed(() => changeActive.value ? '修改' : '新增')
 
 //修改
 const handleUpdateOpen = (row) => {
+    console.log(row.role.name);
     FormDrawerRefs.value.open()
     changeActive.value = row.id
     form.title = row.title
@@ -119,7 +203,7 @@ const handleUpdateOpen = (row) => {
 //新增
 const handleCreateOpen = () => {
     form.title = ''
-    form.content =''
+    form.content = ''
     FormDrawerRefs.value.open()
 }
 
@@ -148,7 +232,7 @@ function UpdataAndCreateActive() {
 }
 
 //刷新
-const handleRefresh=()=>getData(1)
+const handleRefresh = () => getData(1)
 </script>
 <style scoped>
 .f-refresh {
