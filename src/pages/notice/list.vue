@@ -49,7 +49,7 @@
     </el-card>
 </template>
 <script setup>
-import { ref, reactive,computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { getNoticeList, deleteNotice, createNotice, updateNotice } from '@/api/notice'
 import { toast } from '@/composables/util.js'
 import FormDrawer from '@/components/FromDrawer.vue'
@@ -106,7 +106,7 @@ const handleDelete = (id) => {
 const changeActive = ref(0)
 const FormDrawerRefs = ref(null)
 const formRef = ref(null)
-const noticeTitle=computed(()=>changeActive.value ? '修改': '新增')
+const noticeTitle = computed(() => changeActive.value ? '修改' : '新增')
 
 //修改
 const handleUpdateOpen = (row) => {
@@ -118,8 +118,9 @@ const handleUpdateOpen = (row) => {
 
 //新增
 const handleCreateOpen = () => {
+    changeActive.value = 0
     form.title = ''
-    form.content =''
+    form.content = ''
     FormDrawerRefs.value.open()
 }
 
@@ -140,6 +141,7 @@ function UpdataAndCreateActive() {
             toast(changeActive.value ? '修改成功' : '新增成功')
             getData(1)
         }).finally(() => {
+            changeActive.value = 0
             FormDrawerRefs.value.hideLoading()
             FormDrawerRefs.value.close()
         })
@@ -148,7 +150,7 @@ function UpdataAndCreateActive() {
 }
 
 //刷新
-const handleRefresh=()=>getData(1)
+const handleRefresh = () => getData(1)
 </script>
 <style scoped>
 .f-refresh {

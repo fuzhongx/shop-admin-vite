@@ -71,7 +71,11 @@ export function updateMenagerStatus(id,status){
 
 // 修改管理员
 export function updateMenager(id,data){
-    return axios.post(`/admin/manager/${id}`,{data})
+    return axios.post(`/admin/manager/${id}`,data)
+}
+// 新增管理员
+export function createMenager(data){
+    return axios.post(`/admin/manager`,data)
 }
 
 // 删除管理员
