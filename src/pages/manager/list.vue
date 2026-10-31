@@ -86,25 +86,14 @@
                     <el-input v-model="form.password"></el-input>
                 </el-form-item>
                 <el-form-item label="头像" prop="avatar">
-                    <el-upload 
-                    class="avatar-uploader" 
-                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                    :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                    <el-icon v-else class="avatar-uploader-icon">
-                    <Plus />
-                    </el-icon>
-                </el-upload>
+                    <ChooseImage></ChooseImage>
                 </el-form-item>
                 <el-form-item label="所属角色" prop="role_id">
-                   <el-select v-model="form.role_id" value-key="" placeholder="选择所属角色">
-                    <el-option v-for="item in roles"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                    </el-option>
-                   </el-select>
-                   
+                    <el-select v-model="form.role_id" value-key="" placeholder="选择所属角色">
+                        <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
+
                 </el-form-item>
                 <el-form-item label="状态" prop="status">
                     <el-switch v-model='form.status' :active-value="1" :inactive-value="0">
@@ -126,6 +115,7 @@ import {
 } from '@/api/menager'
 import { toast } from '@/composables/util.js'
 import FormDrawer from '@/components/FromDrawer.vue'
+import ChooseImage from '@/components/ChooseImage.vue'
 
 
 const selectForm = reactive({
@@ -139,7 +129,7 @@ const resetSelectForm = () => {
 }
 
 //所属角色
-const roles=ref([])
+const roles = ref([])
 
 const tableData = ref([])
 const loading = ref(false)
@@ -153,7 +143,7 @@ const form = reactive({
     username: '',
     password: '',
     role_id: '',
-    status:1,
+    status: 1,
     avatar: ''
 })
 
@@ -177,7 +167,7 @@ const getData = (p = null) => {
             o.statusLoading = false //自定义switch 按钮loading值
             return o
         })
-        roles.value=res.roles
+        roles.value = res.roles
         total.value = res.totalCount
     }).finally(() => {
         loading.value = false
@@ -221,21 +211,21 @@ const handleUpdateOpen = (row) => {
     console.log(row.role.name);
     FormDrawerRefs.value.open()
     changeActive.value = row.id
-    form.username=row.username,
-    form.password=row.password,
-    form.role_id=row.role_id,
-    form.status=row.status,
-    form.avatar=row.avatar
+    form.username = row.username,
+        form.password = row.password,
+        form.role_id = row.role_id,
+        form.status = row.status,
+        form.avatar = row.avatar
 }
 
 //新增
 const handleCreateOpen = () => {
-    changeActive.value =0
-    form.username= '',
-    form.password='',
-    form.role_id='',
-    form.status=1,
-    form.avatar= ''
+    changeActive.value = 0
+    form.username = '',
+        form.password = '',
+        form.role_id = '',
+        form.status = 1,
+        form.avatar = ''
     FormDrawerRefs.value.open()
 }
 
@@ -254,9 +244,9 @@ function UpdataAndCreateActive() {
             FormDrawerRefs.value.hideLoading()
             FormDrawerRefs.value.close()
             toast(changeActive.value ? '修改成功' : '新增成功')
-            getData(1)
+            changeActive.value ? getData(currenPage.value) : getData(1)
         }).finally(() => {
-            changeActive.value=0
+            changeActive.value = 0
             FormDrawerRefs.value.hideLoading()
             FormDrawerRefs.value.close()
         })
@@ -271,25 +261,5 @@ const handleRefresh = () => getData()
 .f-refresh {
     cursor: pointer;
 }
+</style>
 
-</style>
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  text-align: center;
-}
-</style>

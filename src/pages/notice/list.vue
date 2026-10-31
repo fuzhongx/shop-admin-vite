@@ -139,7 +139,7 @@ function UpdataAndCreateActive() {
             FormDrawerRefs.value.hideLoading()
             FormDrawerRefs.value.close()
             toast(changeActive.value ? '修改成功' : '新增成功')
-            getData(1)
+            changeActive.value ? getData(currenPage.value) : getData(1) 
         }).finally(() => {
             changeActive.value = 0
             FormDrawerRefs.value.hideLoading()
