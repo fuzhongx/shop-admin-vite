@@ -6,9 +6,12 @@
                <el-card shadow="hover" class="relative mb-3" ::body-style="{ 'padding': 0 }">
                   <el-image :src="item.url" fit="cover" class="h-[150px]" style="width: 100%;"
                      :preview-src-list="[item.url]" :initial-index="0" />
-
+            
                   <div class="image-title">{{ item.name }}</div>
                   <div class="flex justify-center items-center p-2">
+
+                     <el-checkbox v-model="item.checked" class="!mr-4" @change="handleChooseChecked(item)"/>
+
                      <el-button link type="primary" size="small" @click="handleResetName(item)" v-loading="loading">重命名</el-button>
                      <el-popconfirm title="是否要删除该图片?" cancel-button-text="取消" 
                      confirm-button-text="确认" class="text-sm"
@@ -35,7 +38,7 @@
    </el-main>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref,computed } from 'vue'
 import {
    GetImageClass,
    UpdataImageName,
@@ -75,7 +78,10 @@ function getData(p = null) {
    GetImageClass(image_class_id.value, currenPage.value).then(res => {
       total.value = Number(res.totalCount) || 0
       loading.value = false
-      list.value = res.list
+      list.value = res.list.map(o=>{
+         o.checked=false //判断是否选中checkedbox
+         return o
+      })
    }).finally(() => {
       loading.value = false
    })
@@ -114,6 +120,19 @@ const handleDeeteImage = (ids) => {
       loading.value=false
    })
 
+}
+
+
+const emit=defineEmits(['choose'])
+const ChooseImage=computed(()=>list.value.filter(o=>o.checked))
+const handleChooseChecked=(item)=>{
+   // 判断只能选一张图片上传
+   if(item.checked && ChooseImage.value.length>1){
+      item.checked =false
+      return toast('只能选择一张上传','error')
+   }
+   //否则只有一张
+   emit('choose',ChooseImage.value)
 }
 
 defineExpose({
