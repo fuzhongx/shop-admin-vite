@@ -47,9 +47,9 @@ const store=useStore()
 //监听激活菜单
 const SelectMenu=(e)=>{}
 
-
 // 默认选中
-const defaultActive=ref(route.path)
+const defaultActive=computed(()=>route.path)
+// ref(route.path)
 
 // 是否折叠
 const isCollapse = computed(() =>!(store.state.asideWidth == "250px"))

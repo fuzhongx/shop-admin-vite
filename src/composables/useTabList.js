@@ -40,6 +40,7 @@ export function useTabList() {
   onBeforeRouteUpdate((to, from) => {
     //点击触发
     tabsActive.value = to.path;
+  
 
     //添加选中tabs导航
     addTab({
@@ -50,6 +51,7 @@ export function useTabList() {
 
   const changeTab = (t) => {
     tabsActive.value = t;
+    route.path=t//选中是aside菜单跟随选中
     router.push(t);
   };
 
@@ -86,7 +88,7 @@ export function useTabList() {
           path: "/",
         },
       ];
-      // // 3.路由跳转到首页
+      // 3.路由跳转到首页
       router.push("/");
     } else if (c == "clearOther") {
       // 1 保留首页和当前页

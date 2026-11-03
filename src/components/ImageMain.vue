@@ -10,7 +10,7 @@
                   <div class="image-title">{{ item.name }}</div>
                   <div class="flex justify-center items-center p-2">
 
-                     <el-checkbox v-model="item.checked" class="!mr-4" @change="handleChooseChecked(item)"/>
+                     <el-checkbox v-model="item.checked" class="!mr-4" @change="handleChooseChecked(item)" v-if="routesImageUrl !='/image/list'"/>
 
                      <el-button link type="primary" size="small" @click="handleResetName(item)" v-loading="loading">重命名</el-button>
                      <el-popconfirm title="是否要删除该图片?" cancel-button-text="取消" 
@@ -48,6 +48,14 @@ import {
 import { showPrompt, toast } from '@/composables/util.js'
 
 import UploadFile from '@/components/UploadFile.vue';
+
+import { useRoute } from 'vue-router';
+
+
+//区分checkedBox在管理员修改新增界面显示
+const routes=useRoute()
+let routesImageUrl=routes.path
+
 
 const loading = ref(false)
 const list = ref([])
