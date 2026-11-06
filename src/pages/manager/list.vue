@@ -11,23 +11,14 @@
                     <el-col :lg="8" :md="12" :offset="0">
                         <div class="flex justify-end">
                             <el-button type="primary" @click="getData">搜索</el-button>
-                            <el-button @click="resetSelectForm">重置</el-button>
+                            <el-button @click="resetForm">重置</el-button>
                         </div>
                     </el-col>
                 </el-row>
             </el-form>
 
             <!-- 刷新和新增 -->
-            <div class="flex items-center justify-between">
-                <div>
-                    <el-button type="primary" size="small" @click="handleCreateOpen">新增</el-button>
-                </div>
-                <div class="f-refresh">
-                    <el-icon :size="20" color="gray" @click="handleRefresh">
-                        <Refresh />
-                    </el-icon>
-                </div>
-            </div>
+            <ListHeader  @create="handleCreateOpen" @refresh="getData"/>
         </template>
 
         <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
@@ -86,7 +77,7 @@
                     <el-input v-model="form.password"></el-input>
                 </el-form-item>
                 <el-form-item label="头像" prop="avatar">
-                    <ChooseImage v-model="form.avatar"/>
+                    <ChooseImage v-model="form.avatar" />
                 </el-form-item>
                 <el-form-item label="所属角色" prop="role_id">
                     <el-select v-model="form.role_id" value-key="" placeholder="选择所属角色">
@@ -104,7 +95,7 @@
     </el-card>
 </template>
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref} from 'vue'
 
 import {
     getManagerList,
@@ -113,55 +104,34 @@ import {
     createMenager,
     deleteMenager
 } from '@/api/menager'
-import { toast } from '@/composables/util.js'
+
+import ListHeader from '@/components/ListHeader.vue'
 import FormDrawer from '@/components/FromDrawer.vue'
 import ChooseImage from '@/components/ChooseImage.vue'
-
-
-const selectForm = reactive({
-    keyWord: ''
-})
-
-const selectFormRef = ref(null)
-const resetSelectForm = () => {
-    selectForm.keyWord = ''
-    getData()
-}
+import { useInitTable, useInitForm } from '@/composables/useCommon.js'
 
 //所属角色
 const roles = ref([])
 
-const tableData = ref([])
-const loading = ref(false)
-
-// 分页
-const currenPage = ref(1)
-const total = ref(1)
-const limit = ref(10)
-
-const form = reactive({
-    username: '',
-    password: '',
-    role_id: '',
-    status: 1,
-    avatar: ''
-})
-
-const rules = {
-    // title: [{ required: true, message: '图库分类不能为空', trigger: 'blur' }],
-    // content: [{ required: true, message: '请输入公告内容', trigger: 'blur' }]
-}
-
-//获取数据
-const getData = (p = null) => {
-    if (typeof p == 'number') {
-        currenPage.value = p
-    }
-    loading.value = true
-    getManagerList(currenPage.value, {
-        limit: 5,
-        keyword: selectForm.keyWord
-    }).then(res => {
+//列表，分页，搜索,删除，修改状态
+const {
+    selectFormRef,
+    selectForm,
+    resetForm,
+    tableData,
+    loading,
+    currenPage,
+    total,
+    limit,
+    getData,
+    handleDelete,
+    handleStatusChange
+} = useInitTable({
+    selectForm: {
+        keyWord: ''
+    },
+    getList: getManagerList,
+    onGetListSuccess: (res) => {
         loading.value = false
         tableData.value = res.list.map(o => {
             o.statusLoading = false //自定义switch 按钮loading值
@@ -169,97 +139,34 @@ const getData = (p = null) => {
         })
         roles.value = res.roles
         total.value = res.totalCount
-    }).finally(() => {
-        loading.value = false
-    })
-}
-getData()
+    },
+    delete:deleteMenager,
+    updateMenagerStatus:updateMenagerStatus
+})
 
-//修改管理员状态
-const handleStatusChange = (status, row) => {
-    row.statusLoading = true
-    updateMenagerStatus(row.id, status).then(res => {
-        toast('修改状态成功')
-        row.status = status
-    }).finally(() => {
-        row.statusLoading = false
-    })
-}
+//修改，新增
+const {
+    FormDrawerRefs,
+    formRef,
+    form,
+    rules,
+    noticeTitle,
+    handleUpdateOpen,
+    handleCreateOpen,
+    handleCreateNotice,
+} = useInitForm({
+    form: {
+        username: '',
+        password: '',
+        role_id: '',
+        status: 1,
+        avatar: ''
+    },
+    getData,
+    update: updateMenager,
+    create: createMenager
+})
 
-// 删除
-const handleDelete = (id) => {
-    loading.value = true
-    deleteMenager(id).then(res => {
-        toast('删除成功')
-        getData(currenPage.value)
-    }).finally(() => {
-        loading.value = false
-    })
-
-}
-
-
-//区别修改新增操作
-const changeActive = ref(0)
-const FormDrawerRefs = ref(null)
-const formRef = ref(null)
-const noticeTitle = computed(() => changeActive.value ? '修改' : '新增')
-
-//修改
-const handleUpdateOpen = (row) => {
-    console.log(row);
-    console.log(row.role.name);
-    FormDrawerRefs.value.open()
-    changeActive.value = row.id
-    form.username = row.username,
-        form.password = row.password,
-        form.role_id = row.role_id,
-        form.status = row.status,
-        form.avatar = row.avatar
-}
-
-//新增
-const handleCreateOpen = () => {
-    changeActive.value = 0
-    form.username = '',
-        form.password = '',
-        form.role_id = '',
-        form.status = 1,
-        form.avatar = ''
-    FormDrawerRefs.value.open()
-}
-
-
-//修改新增共用函数
-const handleCreateNotice = () => {
-    UpdataAndCreateActive()
-}
-
-function UpdataAndCreateActive() {
-    FormDrawerRefs.value.showLoading()
-    formRef.value.validate((valid) => {
-        if (!valid) return
-        let fun = changeActive.value ? updateMenager(changeActive.value, form) : createMenager(form)
-        fun.then(res => {
-            FormDrawerRefs.value.hideLoading()
-            FormDrawerRefs.value.close()
-            toast(changeActive.value ? '修改成功' : '新增成功')
-            changeActive.value ? getData(currenPage.value) : getData(1)
-        }).finally(() => {
-            changeActive.value = 0
-            FormDrawerRefs.value.hideLoading()
-            FormDrawerRefs.value.close()
-        })
-    })
-
-}
-
-//刷新
-const handleRefresh = () => getData()
 </script>
-<style scoped>
-.f-refresh {
-    cursor: pointer;
-}
-</style>
+<style scoped></style>
 
