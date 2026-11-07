@@ -4,7 +4,13 @@
             <ListHeader @create="handleCreateOpen" @refresh="getData" />
             <el-tree ref="tree" :data="tableData" node-key="id" :props="defaultProps" @node-click=""
             :default-expanded-keys="defaultExpandedKeys"
-            class="mt-2"></el-tree>
+            class="mt-2">
+            <template #default="{ node, data }">
+           <el-tag type="success" size="small"  effect="dark">权限</el-tag>
+           
+           <span>{{ data.name }}</span>
+            </template>
+        </el-tree>
         </el-card>
 
     </div>
