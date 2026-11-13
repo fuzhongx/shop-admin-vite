@@ -18,7 +18,7 @@
             </el-form>
 
             <!-- 刷新和新增 -->
-            <ListHeader  @create="handleCreateOpen" @refresh="getData"/>
+            <ListHeader @create="handleCreateOpen" @refresh="getData" />
         </template>
 
         <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
@@ -68,7 +68,7 @@
         <el-pagination background layout="prev, pager, next" :total="total" class="flex 
         justify-center items-center mt-3" :current-page="currenPage" :page-size="limit" @current-change="getData" />
 
-        <FormDrawer :title="noticeTitle" @submit="handleCreateNotice" ref="FormDrawerRefs">
+        <FormDrawer :title="DrawerTitle" @submit="UpdataAndCreateActive" ref="FormDrawerRefs">
             <el-form :model="form" ref="formRef" :rules="rules" label-width="80px">
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="form.username"></el-input>
@@ -95,7 +95,7 @@
     </el-card>
 </template>
 <script setup>
-import { ref} from 'vue'
+import { ref } from 'vue'
 
 import {
     getManagerList,
@@ -140,8 +140,8 @@ const {
         roles.value = res.roles
         total.value = res.totalCount
     },
-    delete:deleteMenager,
-    updateMenagerStatus:updateMenagerStatus
+    delete: deleteMenager,
+    updateMenagerStatus: updateMenagerStatus
 })
 
 //修改，新增
@@ -150,10 +150,10 @@ const {
     formRef,
     form,
     rules,
-    noticeTitle,
+    DrawerTitle,
     handleUpdateOpen,
     handleCreateOpen,
-    handleCreateNotice,
+    UpdataAndCreateActive,
 } = useInitForm({
     form: {
         username: '',

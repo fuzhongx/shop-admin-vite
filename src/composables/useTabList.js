@@ -51,7 +51,7 @@ export function useTabList() {
 
   const changeTab = (t) => {
     tabsActive.value = t;
-    route.path=t//选中是aside菜单跟随选中
+    // route.path=t//选中是aside菜单跟随选中
     router.push(t);
   };
 
@@ -95,7 +95,6 @@ export function useTabList() {
       tabsList.value = tabsList.value.filter(
         (v) => v.path == "/" || v.path == tabsActive.value,
       );
-      console.log(tabsList.value, 11);
 
       // 2.将首页和当前页重新存储更新tabsList
       cookie.set("tabsList", tabsList.value);

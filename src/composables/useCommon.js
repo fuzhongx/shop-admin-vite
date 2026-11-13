@@ -26,17 +26,14 @@ export function useInitTable(opt = {}) {
     const total = ref(1)
     const limit = ref(10)
 
-
+  
     //获取数据
     const getData = (p = null) => {
         if (typeof p == 'number') {
             currenPage.value = p
         }
         loading.value = true
-        opt.getList(currenPage.value, {
-            limit: 5,
-            keyword: selectForm.keyWord
-        }).then(res => {
+        opt.getList(currenPage.value, selectForm).then(res => {
             if (opt.onGetListSuccess && typeof opt.onGetListSuccess == 'function') {
                 opt.onGetListSuccess(res)
             } else {
@@ -48,6 +45,8 @@ export function useInitTable(opt = {}) {
         })
     }
     getData()
+
+// 删除
     const handleDelete = (id) => {
         loading.value = true
         opt.delete(id).then(res => {
@@ -58,10 +57,10 @@ export function useInitTable(opt = {}) {
         })
     }
 
-    //修改管理员状态
+    //修改状态
     const handleStatusChange = (status, row) => {
         row.statusLoading = true
-        opt.updateMenagerStatus(row.id, status).then(res => {
+        opt.updateStatus(row.id, status).then(res => {
             toast('修改状态成功')
             row.status = status
         }).finally(() => {
@@ -92,16 +91,13 @@ export function useInitForm(opt = {}) {
     const changeActive = ref(0)
     const FormDrawerRefs = ref(null)
     const formRef = ref(null)
-    const noticeTitle = computed(() => changeActive.value ? '修改' : '新增')
+    const DrawerTitle = computed(() => changeActive.value ? '修改' : '新增')
     const form = reactive({})
     const rules = opt.rules || {}
+    const currenPage = ref(1)
 
 
     //修改新增共用函数
-    const handleCreateNotice = () => {
-        UpdataAndCreateActive()
-    }
-
     function UpdataAndCreateActive() {
         FormDrawerRefs.value.showLoading()
         formRef.value.validate((valid) => {
@@ -111,7 +107,7 @@ export function useInitForm(opt = {}) {
                 FormDrawerRefs.value.hideLoading()
                 FormDrawerRefs.value.close()
                 toast(changeActive.value ? '修改成功' : '新增成功')
-                opt.getData(changeActive.value ? currenPage.value : 1)
+                changeActive.value ?  opt.getData(currenPage.value) : opt.getData(1)  
             }).finally(() => {
                 changeActive.value = 0
                 FormDrawerRefs.value.hideLoading()
@@ -131,6 +127,7 @@ export function useInitForm(opt = {}) {
 
     //编辑
     const handleUpdateOpen = (row) => {
+        console.log(row,'编辑');
         FormDrawerRefs.value.open()
         changeActive.value = row.id
         resetForm(row)
@@ -148,10 +145,10 @@ export function useInitForm(opt = {}) {
         formRef,
         form,
         rules,
-        noticeTitle,
+        DrawerTitle,
         handleUpdateOpen,
         handleCreateOpen,
-        handleCreateNotice,
+        UpdataAndCreateActive,
         resetForm
     }
 }

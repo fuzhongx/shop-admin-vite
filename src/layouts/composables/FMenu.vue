@@ -38,7 +38,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import {useStore} from 'vuex'
-import { useRoute } from 'vue-router';
+import { useRoute ,onBeforeRouteUpdate} from 'vue-router';
 
 const route=useRoute()
 const store=useStore()
@@ -48,7 +48,12 @@ const store=useStore()
 const SelectMenu=(e)=>{}
 
 // 默认选中
-const defaultActive=computed(()=>route.path)
+const defaultActive=ref(route.path)
+
+//监听路由变化，点击tag时候aside跟随变化
+onBeforeRouteUpdate((to,from)=>{
+    defaultActive.value=to.path
+})
 // ref(route.path)
 
 // 是否折叠

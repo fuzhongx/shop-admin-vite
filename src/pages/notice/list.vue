@@ -15,9 +15,9 @@
         </template>
 
         <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">
-            <el-table-column prop="content" label="公告标题" width="180" align="center" />
-            <el-table-column prop="create_time" label="发布时间" width="180" align="center" />
-            <el-table-column prop="update_time" label="更新时间" width="180" align="center" />
+            <el-table-column prop="content" label="公告标题" />
+            <el-table-column prop="create_time" label="发布时间" align="center" />
+            <el-table-column prop="update_time" label="更新时间"  align="center" />
             <el-table-column label="操作" align="center">
                 <template #default="scope">
                     <el-button type="primary" size="small" text @click="handleUpdateOpen(scope.row)">修改</el-button>
