@@ -15,11 +15,11 @@
                         <span>{{ data.name }}</span>
                         <div class="ml-auto">
                             <el-switch :modelValue="data.status" :active-value="1" :inactive-value="0"
-                            @change="handleStatusChange($event, data)" :loading="data.statusLoading">
+                                @change="handleStatusChange($event, data)" :loading="data.statusLoading">
                             </el-switch>
                             <el-button text type="primary" size="small" @click.stop="handleUpdateOpen(data)">修改</el-button>
-                            <el-button text type="primary" size="small" @click.stop="handleCreateOpen">增加</el-button>
-                            <el-popconfirm title="是否删除该管理员？" confirm-button-text="确认" cancel-button-text="取消"
+                            <el-button text type="primary" size="small" @click.stop="addChild(data.id)">增加</el-button>
+                            <el-popconfirm title="是否删除该管理员权限？" confirm-button-text="确认" cancel-button-text="取消"
                                 @confirm="handleDelete(data.id)" width="200">
                                 <template #reference>
                                     <el-button type="primary" size="small" text>删除</el-button>
@@ -35,36 +35,41 @@
             <el-form :model="form" ref="formRef" :rules="rules" label-width="80px">
                 <el-form-item label="上级菜单" prop="rule_id">
                     <el-cascader v-model="form.rule_id" :options="options" :props="{
-                        label:'name',
-                        children:'child',
+                        value: 'id',
+                        label: 'name',
+                        children: 'child',
                         checkStrictly: true,
-                    }" filterable clearable  placeholder="请选择上级菜单" />
+                    }" filterable clearable placeholder="请选择上级菜单" />
                 </el-form-item>
                 <el-form-item label="菜单/规则" prop="menu">
-                    <el-input v-model="form.menu"></el-input>
+                    <el-radio-group v-model="form.menu">
+                        <el-radio :value="1" border>菜单</el-radio>
+                        <el-radio :value="0" border>规则</el-radio>
+                    </el-radio-group>
                 </el-form-item>
-                <el-form-item label="菜单/权限" prop="name">
-                    <el-input v-model="form.name"></el-input>
+                <el-form-item label="名称" prop="name" style="width: 50%;">
+                    <el-input v-model="form.name" placeholder="名称"></el-input>
                 </el-form-item>
-                <el-form-item label="菜单图标" prop="icon">
-                    <el-input v-model="form.title"></el-input>
+                <el-form-item label="菜单图标" prop="icon" v-if="form.menu == 1">
+                    <IconSelect v-model="form.icon" />
                 </el-form-item>
-                <el-form-item label="前端路由" prop="frontpath">
+                <el-form-item label="前端路由" prop="frontpath" v-if="form.menu == 1 && form.rule_id > 0">
                     <el-input v-model="form.frontpath"></el-input>
                 </el-form-item>
-                <el-form-item label="请求方式" prop="method">
-                    <el-input v-model="form.method"></el-input>
+                <el-form-item label="后端规则" prop="condition" v-if="form.menu == 0">
+                    <el-input v-model="form.condition"></el-input>
+                </el-form-item>
+                <el-form-item label="请求方式" prop="method" v-if="form.menu == 0">
+                    <el-select v-model="form.method" value-key="" placeholder="请选择请求方式" clearable filterable>
+                        <el-option v-for="item in ['GET', 'POST', 'PUT', 'DELETE']" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+
                 </el-form-item>
                 <el-form-item label="排序" prop="order">
-                    <el-input-number v-model="form.order"
-                        :min="1" :max="100" :step="1" :controls="true">
+                    <el-input-number v-model="form.order" :min="1" :max="100" :step="1" :controls="true">
                     </el-input-number>
                 </el-form-item>
-                <el-form-item label="状态" prop="status">
-                    <el-switch v-model='form.status' :active-value="1" :inactive-value="0">
-                    </el-switch>
-                </el-form-item>
-
             </el-form>
         </FormDrawer>
     </div>
@@ -73,13 +78,22 @@
 import { ref } from 'vue'
 import ListHeader from '@/components/ListHeader.vue'
 import FormDrawer from '@/components/FromDrawer.vue'
-import { getRuleList,updateRuleStatus,deleteRule,createRule,updateRule } from '@/api/rule.js'
+import IconSelect from '@/components/IconSelect.vue'
+import { getRuleList, updateRuleStatus, deleteRule, createRule, updateRule } from '@/api/rule.js'
 import { useInitTable, useInitForm } from '@/composables/useCommon.js'
 
 const defaultProps = {
     children: 'child',
     label: 'name',
 }
+const options = ref([
+    {
+        value: '',
+        label: '',
+        children: []
+    }
+])
+
 const defaultExpandedKeys = ref([])
 const {
     tableData,
@@ -98,12 +112,13 @@ const {
         defaultExpandedKeys.value = res.list.map(o => o.id)
         tableData.value = res.list.map(o => {
             o.statusLoading = false //自定义switch 按钮loading值
-            return o})
+            return o
+        })
     },
-    updateStatus:updateRuleStatus,
-    delete:deleteRule,
+    updateStatus: updateRuleStatus,
+    delete: deleteRule,
 })
-const options = ref([])
+
 const {
     FormDrawerRefs,
     formRef,
@@ -116,7 +131,7 @@ const {
 } = useInitForm({
     form: {
         rule_id: '',
-        menu: '',
+        menu: 1,
         name: '',
         condition: '',
         method: 'GET',
@@ -125,10 +140,17 @@ const {
         icon: '',
         frontpath: ''
     },
-    create:createRule,
-    update:updateRule
+    create: createRule,
+    update: updateRule
 
 })
+
+//添加子集
+const addChild = (id) => {
+    handleCreateOpen()
+    form.rule_id = id
+    form.status = 1
+}
 
 </script>
 <style scoped>
