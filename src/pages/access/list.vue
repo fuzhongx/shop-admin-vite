@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-card shadow="never" v-loading="loading">
-            <ListHeader @create="handleCreateOpen" @refresh="getData" />
+            <ListHeader @create="handleCreateOpen" @refresh="getData"  :layout="['create','refresh']" />
             <el-tree ref="tree" :data="tableData" node-key="id" :props="defaultProps" @node-click=""
                 :default-expanded-keys="defaultExpandedKeys" class="mt-2">
                 <template #default="{ node, data }">

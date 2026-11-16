@@ -26,7 +26,7 @@ export function useInitTable(opt = {}) {
     const total = ref(1)
     const limit = ref(10)
 
-  
+
     //获取数据
     const getData = (p = null) => {
         if (typeof p == 'number') {
@@ -46,7 +46,7 @@ export function useInitTable(opt = {}) {
     }
     getData()
 
-// 删除
+    // 删除
     const handleDelete = (id) => {
         loading.value = true
         opt.delete(id).then(res => {
@@ -68,6 +68,28 @@ export function useInitTable(opt = {}) {
         })
     }
 
+    //批量删除
+    const multipleTableRef = ref(null)
+    const muitiSelecttionId = ref(null)
+    const handleSelectionChange = (e) => {
+        muitiSelecttionId.value = e.map(o => o.id)
+    }
+
+    const handleDeleteMuitiSelection = () => {
+        loading.value = true
+        opt.delete(muitiSelecttionId.value)
+            .then(res => {
+                toast('删除成功')
+                //清除选中节点
+                if (multipleTableRef.value) {
+                    multipleTableRef.value.clearSelection()
+                }
+                getData()
+            }).finally(() => {
+                loading.value = false
+            })
+    }
+
 
     return {
         selectFormRef,
@@ -80,7 +102,10 @@ export function useInitTable(opt = {}) {
         limit,
         getData,
         handleDelete,
-        handleStatusChange
+        handleStatusChange,
+        multipleTableRef,
+        handleSelectionChange,
+        handleDeleteMuitiSelection
     }
 }
 
@@ -107,7 +132,7 @@ export function useInitForm(opt = {}) {
                 FormDrawerRefs.value.hideLoading()
                 FormDrawerRefs.value.close()
                 toast(changeActive.value ? '修改成功' : '新增成功')
-                changeActive.value ?  opt.getData(currenPage.value) : opt.getData(1)  
+                changeActive.value ? opt.getData(currenPage.value) : opt.getData(1)
             }).finally(() => {
                 changeActive.value = 0
                 FormDrawerRefs.value.hideLoading()
@@ -127,7 +152,6 @@ export function useInitForm(opt = {}) {
 
     //编辑
     const handleUpdateOpen = (row) => {
-        console.log(row,'编辑');
         FormDrawerRefs.value.open()
         changeActive.value = row.id
         resetForm(row)

@@ -2,7 +2,7 @@
     <el-card shadow="never">
         <template #header>
             <!-- 刷新和新增 -->
-            <ListHeader @create="handleCreateOpen" @refresh="getData" />
+            <ListHeader @create="handleCreateOpen" @refresh="getData"  :layout="['create','refresh']"  />
         </template>
 
         <el-table :data="tableData" stripe style="width: 100%" v-loading="loading">

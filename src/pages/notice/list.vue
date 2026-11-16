@@ -4,7 +4,6 @@
             <div class="flex items-center justify-between">
                 <div>
                     <el-button type="primary" size="small" @click="handleCreateOpen">新增</el-button>
-
                 </div>
                 <div class="f-refresh">
                     <el-icon :size="20" color="gray" @click="handleRefresh">
