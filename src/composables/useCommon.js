@@ -63,6 +63,7 @@ export function useInitTable(opt = {}) {
         opt.updateStatus(row.id, status).then(res => {
             toast('修改状态成功')
             row.status = status
+            getData(currenPage.value)
         }).finally(() => {
             row.statusLoading = false
         })
@@ -124,10 +125,19 @@ export function useInitForm(opt = {}) {
 
     //修改新增共用函数
     function UpdataAndCreateActive() {
-        FormDrawerRefs.value.showLoading()
         formRef.value.validate((valid) => {
             if (!valid) return
-            let fun = changeActive.value ? opt.update(changeActive.value, form) : opt.create(form)
+            FormDrawerRefs.value.showLoading()
+            let body={}
+
+            if(opt.beforeSubmit&& typeof opt.beforeSubmit=='function'){
+               body=opt.beforeSubmit({...form}) //将函数传入的参数对象展开重新赋值body
+            }else{
+                body=form
+            }
+
+
+            let fun = changeActive.value ? opt.update(changeActive.value, body) : opt.create(body)
             fun.then(res => {
                 FormDrawerRefs.value.hideLoading()
                 FormDrawerRefs.value.close()
