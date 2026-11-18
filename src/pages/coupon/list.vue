@@ -11,7 +11,7 @@
                 <template #default="{ row }">
                     <div class="border-light-50 rounded px-1" :class="row.statusText == '领取中' ? 'active' : 'inactive'">
                         <h2 class="font-bold">{{ row.name }}</h2>
-                        <small class="text-sm">
+                        <small class="text-sm" style="font-size: 12px;">
                             {{ row.start_time }}~{{ row.end_time }}
                         </small>
                     </div>
