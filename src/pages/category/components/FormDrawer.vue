@@ -1,5 +1,5 @@
 <template>
-    <FormDrawer ref="formDrawerRef" confirmText="关联">
+    <FormDrawer ref="formDrawerRef" confirmText="关联" @submit="handleOpenDiolad" title="推荐商品">
         <el-table :data="tableData" border stripe class="tableClass">
             <el-table-column label="ID" prop="goods_id" width="80" align="center" />
             <el-table-column label="商品名称" prop="name" align="center" />
@@ -13,53 +13,74 @@
                     <el-popconfirm title="是否删除该推荐商品？" confirm-button-text="确认" cancel-button-text="取消"
                         @confirm="handleDeleteCategory(row)">
                         <template #reference>
-                            <el-button type="primary" size="small" text class=" px-0">删除</el-button>
+                            <el-button type="primary" size="small" text class=" px-0"
+                                :loading="row.deleteLoading">删除</el-button>
                         </template>
                     </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
-
     </FormDrawer>
+    <ChooseGoods ref="ChooseGoodsRef" ></ChooseGoods>
 </template>
 <script setup>
 import { ref } from 'vue'
 import FormDrawer from '@/components/FromDrawer.vue'
+import ChooseGoods from '@/components/ChooseGoods.vue'
 import { toast } from '@/composables/util.js'
 import {
     GoodsCategory,
     deleteGoodsCategory
 } from '@/api/category.js'
 
+defineProps({
+    title:String
+})
+
 const formDrawerRef = ref(null)
 const tableData = ref()
+
 
 const category_id = ref(null)
 const open = (data) => {
     category_id.value = data.id
-    getGoodsList().then(res => {
+    getData().then(res => {
         formDrawerRef.value.open()
+    }).finally(() => {
+        data.goodsLoading = false
     })
 }
 
-function getGoodsList() {
+
+function getData() {
     return GoodsCategory(category_id.value).then(res => {
         tableData.value = res.map(o => {
-            o.goodsLoading = false
+            o.deleteLoading = false
             return o
         })
     })
 }
 
+
 //删除关联
 const handleDeleteCategory = (row) => {
+    row.deleteLoading = true
     deleteGoodsCategory(row.id).then(res => {
-        getGoodsList()
+        row.deleteLoading = false
+        getData()
         toast('删除成功')
     })
 }
+
+const ChooseGoodsRef=ref(null)
+// 关联
+const handleOpenDiolad = () => {
+    ChooseGoodsRef.value.open()
+}
+
 defineExpose({
-    open
+    open,
+    getData
 })
 </script>
 <style scoped>

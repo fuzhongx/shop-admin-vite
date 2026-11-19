@@ -41,3 +41,18 @@ export function showFullLoading() {
 export function hideFullLoading() {
   nprogress.done()
 }
+
+
+//接口参数格式转化
+export function queryParams(query){
+  let p = []
+  for (const key in query) {
+      if (query[key]) {
+          p.push(`${key}=${encodeURIComponent(query[key])}`)//防止参数丢失limit=10,keyword='ceshi'
+      }
+
+  }
+  let r = p.join('&')   //limit=10&keyword=ceshi
+  r = r ? `?`+r : '' //tab=all&title=关键词&category_id=2&limit=10
+  return r
+}

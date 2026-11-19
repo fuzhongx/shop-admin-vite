@@ -8,7 +8,8 @@
                     <div class="f-menu-comtemt">
                         <span>{{ data.name }}</span>
                         <div class="ml-auto">
-                            <el-button text type="primary" size="small" @click.stop="handleGoodsCategory(data)" :loading="data.goodsLoading">推荐商品</el-button>
+                            <el-button text type="primary" size="small" @click.stop="handleGoodsCategory(data)" 
+                            :loading="data.goodsLoading">推荐商品</el-button>
                             <el-switch :modelValue="data.status" :active-value="1" :inactive-value="0"
                                 @change="handleStatusChange($event, data)" :loading="data.statusLoading">
                             </el-switch>
@@ -32,7 +33,7 @@
                 </el-form-item>
             </el-form>
         </FormDrawer>
-        <FormGoodsDrawer ref="fromGoodsDrawerRef" title="推荐产品"></FormGoodsDrawer>
+        <FormGoodsDrawer ref="fromGoodsDrawerRef"></FormGoodsDrawer>
     </div>
 </template>
 <script setup>
@@ -70,6 +71,7 @@ const {
         defaultExpandedKeys.value = res.map(o => o.id)
         tableData.value = res.map(o => {
             o.statusLoading = false //自定义switch 按钮loading值
+            o.goodsLoading = false //自定义switch 按钮loading值
             return o
         })
     },
@@ -102,6 +104,7 @@ const {
 const fromGoodsDrawerRef=ref(null)
 //推荐商品
 const handleGoodsCategory=(data)=>{
+    data.goodsLoading=true
     fromGoodsDrawerRef.value.open(data)
 }
 

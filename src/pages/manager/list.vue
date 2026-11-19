@@ -5,7 +5,7 @@
                 <el-row :gutter="20" class="items-center">
                     <el-col :lg="16" :md="12" :offset="0" class="flex items-center">
                         <el-form-item label="关键字" class="text-black">
-                            <el-input v-model="selectForm.keyWord" placeholder="管理员昵称" clearable></el-input>
+                            <el-input v-model="selectForm.keyword" placeholder="管理员账户" clearable></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :lg="8" :md="12" :offset="0">
@@ -128,7 +128,8 @@ const {
     handleStatusChange
 } = useInitTable({
     selectForm: {
-        keyWord: ''
+        limit:5,
+        keywords: ''
     },
     getList: getManagerList,
     onGetListSuccess: (res) => {
