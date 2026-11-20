@@ -21,7 +21,7 @@
             </el-table-column>
         </el-table>
     </FormDrawer>
-    <ChooseGoods ref="ChooseGoodsRef" ></ChooseGoods>
+    <ChooseGoods ref="ChooseGoodsRef" @submit="refreshGetData"></ChooseGoods>
 </template>
 <script setup>
 import { ref } from 'vue'
@@ -75,7 +75,12 @@ const handleDeleteCategory = (row) => {
 const ChooseGoodsRef=ref(null)
 // 关联
 const handleOpenDiolad = () => {
-    ChooseGoodsRef.value.open()
+    ChooseGoodsRef.value.open(category_id.value)
+}
+
+//关联成功后刷新数据
+const refreshGetData=()=>{
+    getData()
 }
 
 defineExpose({
