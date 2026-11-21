@@ -142,7 +142,7 @@ const {
         total.value = res.totalCount
     },
     delete: deleteMenager,
-    updateMenagerStatus: updateMenagerStatus
+    updateStatus: updateMenagerStatus
 })
 
 //修改，新增

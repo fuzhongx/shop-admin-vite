@@ -9,7 +9,7 @@
                     <el-button type="primary" @click="getData">搜索</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="tableData" stripe style="width: 100%" v-loading="loading"
+            <el-table :data="tableData" ref="tableRef"  stripe style="width: 100%" v-loading="loading"
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection"></el-table-column>
                 <el-table-column label="商品" width="500">
@@ -100,6 +100,8 @@ const handleSelectionChange = (e) => {
     goods_ids.value = e.map(o => o.id)
 }
 
+const tableRef=ref(null)
+
 // 确认关联
 const handleConnet = () => {
     connetLoading.value = true
@@ -108,6 +110,7 @@ const handleConnet = () => {
         emit('submit')
     }).finally(() => {
         connetLoading.value = false
+        tableRef.value.clearSelection()
         close()
     })
 }

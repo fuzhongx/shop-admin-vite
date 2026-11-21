@@ -51,7 +51,7 @@
             <el-table-column label="登录注册" align="center" width="250">
                 <template #default="{ row }">
                     <p>  注册时间：{{ row.create_time }}</p>
-                    <p v-if="row.last_login_time">  登录时间：{{ row.create_time }}</p>
+                    <p v-if="row.last_login_time">登录时间：{{ row.last_login_time }}</p>
                 </template>
             </el-table-column>
             <el-table-column label="状态" align="center">

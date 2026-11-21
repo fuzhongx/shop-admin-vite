@@ -9,23 +9,23 @@ export function getGoodsList(page = 1,query={}) {
 }
 
 // 删除
-export function deleteCoupon(id) {
-    return axios.post(`/admin/coupon/${id}/delete`)
+export function deleteGoods(ids) {
+    return axios.post(`/admin/goods/delete_all`,{ids})
 }
 
 
 //新增
-export function createCoupon(data) {
-    return axios.post('/admin/coupon', data)
+export function createGoods(data) {
+    return axios.post('/admin/goods', data)
 }
 
 //修改
-export function updateCoupon(id, data) {
-    return axios.post(`/admin/coupon/${id}`, data)
+export function updateGoods(id, data) {
+    return axios.post(`/admin/goods/${id}`, data)
 }
 
 // 修改状态
-export function updateCouponStatus(id, status) {
-    return axios.post(`/admin/coupon/${id}/update_status`, { status })
+export function updateGoodsStatus(ids, status) {
+    return axios.post(`/admin/goods/changestatus`, { ids,status })
 }
 
