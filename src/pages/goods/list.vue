@@ -10,10 +10,10 @@
                     <el-row :gutter="20" class="items-center">
                         <el-col :span="8" :offset="0">
                             <el-form-item label="关键字">
-                                <el-input v-model="selectForm.keyword" placeholder="商品名称" clearable></el-input>
+                                <el-input v-model="selectForm.title" placeholder="商品名称" clearable></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="8" :offset="0" class="flex items-center" v-if="selectFormShow.value">
+                        <el-col :span="8" :offset="0" class="flex items-center" v-if="selectFormShow">
                             <el-form-item label="关键字" class="text-black">
                                 <el-select v-model="selectForm.category_id" placeholder="请选择商品分类" clearable filterable>
                                     <el-option v-for="item in Category_List" :key="item.id" :label="item.name"
@@ -29,9 +29,9 @@
                                 <el-button type="primary" @click="getData">搜索</el-button>
                                 <el-button @click="resetForm">重置</el-button>
                                 <el-button @click="openSelectForm" text  type="primary">
-                                {{ selectFormShow.value? '展开' : '收缩' }}
+                                {{ !selectFormShow? '展开' : '收缩' }}
                                 <el-icon>
-                                    <ArrowUp v-if="selectFormShow.value"/>
+                                    <ArrowUp v-if="!selectFormShow"/>
                                     <ArrowDown v-else/>
                                 </el-icon>
                                 </el-button>
