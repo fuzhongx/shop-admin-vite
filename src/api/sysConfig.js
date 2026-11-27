@@ -5,6 +5,6 @@ export function getSysConfig(){
     axios.get('/admin/sysconfig')
 }
 
-export function updateSysConfig(){
-    axios.get('/admin/sysconfig')
+export function updateSysConfig(data){
+    axios.post('/admin/sysconfig',data)
 }
